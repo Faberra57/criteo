@@ -1,0 +1,30 @@
+[
+    {
+        "timestamp": "2026-03-15 16:43:52",
+        "hyperparameters": {
+            "model_name": "prdev/mini-gte",
+            "batch_size": 8,
+            "epochs": 1,
+            "max_seq_length": 128,
+            "sample_size": 20000,
+            "distance_metric": "cosine",
+            "warmup_steps": 100,
+            "device": "mps"
+        },
+        "results": {
+            "final_eval_score": {
+                "val-eval_cosine_accuracy": 0.8566666841506958
+            },
+            "training_duration_sec": 1829.8661849498749,
+            "accuracy_baseline": 92.05,
+            "accuracy_finetuned": 91.1,
+            "accuracy_gain": -0.95,
+            "accuracy_logreg": 91.15,
+            "accuracy_xgboost": 91.3,
+            "best_classifier": "XGBoost",
+            "best_classifier_accuracy": 91.3,
+            "train_time_logreg_sec": 14.12,
+            "train_time_xgboost_sec": 101.57
+        }
+    }
+]

@@ -1,2 +1,8 @@
 data/
 .venv/
+.vscode/
+saved_models/
+modele_checkpoint/
+modele_catalogue_finetuned_final/
+checkpoints/
+tmpp0tohx6_.csv
