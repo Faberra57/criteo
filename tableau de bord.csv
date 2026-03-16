@@ -1,0 +1,20 @@
+Date_Debut,Date_Fin,Phase,Tâche,Responsable,Statut,Durée_Heures
+09/02/2026,10/02/2026,Data Prep,"Intégration du Ground Truth et nettoyage des textes (concaténation)",Salah Eddine,Terminé,4
+11/02/2026,11/02/2026,Data Prep,"Analyse du déséquilibre des classes et stratégie d'échantillonnage",Tao,Terminé,3
+12/02/2026,13/02/2026,Level 1 (Fine-Tuning),"Sélection des modèles sur le Leaderboard MTEB (mini-gte)",Thomas,Terminé,2
+14/02/2026,16/02/2026,Level 1 (Fine-Tuning),"Implémentation de la Batch Hard Triplet Loss",Yohan,Terminé,5
+17/02/2026,18/02/2026,Level 1 (Fine-Tuning),"Gestion des contraintes MPS (Micro-batching et max_seq_length)",Thomas,Terminé,6
+19/02/2026,20/02/2026,Level 1 (Fine-Tuning),"Lancement et monitoring du Fine-Tuning sur 30k produits",Yohan,Terminé,8
+23/02/2026,24/02/2026,Level 1 (Classifieur),"Extraction des vecteurs embeddings (384 dimensions)",Salah Eddine,Terminé,3
+24/02/2026,25/02/2026,Level 1 (Classifieur),"Entraînement de la Régression Logistique (Baseline supervisée)",Tao,Terminé,4
+26/02/2026,27/02/2026,Level 1 (Classifieur),"Entraînement XGBoost (Hyperparamètres et Taylor expansion)",Thomas,Terminé,6
+02/03/2026,02/03/2026,Level 1 (Évaluation),"Calcul de l'Accuracy (91-94%) et génération matrice de confusion",Yohan,Terminé,4
+03/03/2026,03/03/2026,Level 1 (Évaluation),"Visualisation de l'espace latent (t-SNE / PCA)",Tao,Terminé,3
+04/03/2026,05/03/2026,Level 2 (Graphe & LLM),"Modélisation de la taxonomie en graphe orienté (NetworkX)",Salah Eddine,Terminé,5
+05/03/2026,06/03/2026,Level 2 (Graphe & LLM),"Génération des descriptions enrichies des sous-catégories via LLM",Thomas,Terminé,5
+06/03/2026,09/03/2026,Level 2 (Zero-Shot),"Implémentation du Retrieval STS (BAAI/bge-small-en-v1.5)",Yohan,Terminé,6
+09/03/2026,10/03/2026,Level 2 (Zero-Shot),"Optimisation des similarités cosinus et calcul du top-1 local",Tao,Terminé,4
+10/03/2026,11/03/2026,Industrialisation,"Définition du seuil de rejet et pipeline d'Active Learning",Salah Eddine,Terminé,4
+11/03/2026,12/03/2026,Perspectives,"Prototypage du Soft Hierarchical Decoding (Level 2)",Thomas,Terminé,5
+12/03/2026,13/03/2026,Perspectives,"Ébauche de l'algorithme Beam Search pour les Levels 3 et 4",Yohan,Terminé,5
+13/03/2026,14/03/2026,Restitution,"Rédaction de la synthèse LaTeX et push sur GitHub",Salah Eddine & Tao,Terminé,6
