@@ -1,0 +1,1405 @@
+\documentclass[12pt,a4paper]{report}
+
+% =======================
+% Packages
+% =======================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{pdflscape}
+
+\setstretch{1.15} % Interligne légèrement augmenté pour une bonne lisibilité
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=black}
+
+\setcounter{tocdepth}{3}
+
+\begin{document}
+
+% =======================
+% Page de couverture
+% =======================
+\begin{titlepage}
+    \centering
+    \vspace*{1.2cm}
+
+    \includegraphics[width=0.22\textwidth]{figures/logo_ensae.pdf}\par
+    \vspace{0.8cm}
+    
+    {\scshape\LARGE ENSAE Paris \par}
+    \vspace{1cm}
+    {\scshape\Large Projet Stat'App \par}
+    \vspace{1.5cm}
+    
+    \rule{\linewidth}{0.5mm} \\[0.4cm]
+    {\huge \bfseries Unsupervised \& Semi‑Supervised Product Categorization at Scale into the Google Product Taxonomy \par}
+    \vspace{0.4cm}
+    \rule{\linewidth}{0.5mm} \\[1.5cm]
+    
+    \Large
+    \emph{Auteurs:}\\
+    Salah Eddine NEJJARI, Tao DANG TRAN, \\
+    Thomas FAVRE, Yohan ANDRIAMAMPIONONA\par
+    
+    \vspace{1cm}
+    \normalsize
+    \emph{Sous le tutorat de :} \\
+    Guillaume Lochon (Critéo)\\
+    Ilan Benchetrit (Critéo)\\ 
+    Nicolas Chopin (Ensae)\\
+    
+    \vfill
+    {\large Mai 2026 \par}
+\end{titlepage}
+
+% =======================
+% Sommaire
+% =======================
+\tableofcontents
+\newpage
+
+% =======================
+% 1. Introduction
+% =======================
+\chapter{Introduction}
+\label{chap:introduction}
+
+\section{Objectifs du Projet}
+Ce projet a été initié par l'entreprise Critéo. Il constitue un exercice pédagogique et n'a pas vocation à être déployé directement en production.
+Son objectif est de construire un pipeline de classification hiérarchique de produits à partir d'un catalogue partiellement annoté.
+Pour cela, nous mobilisons des techniques de NLP (\textit{Natural Language Processing}), ainsi que des méthodes de machine learning.
+
+\section{Présentation de l'entreprise Critéo et contextualisation du problème}
+
+Critéo est un acteur mondial de la publicité en ligne, spécialisé dans le ciblage et l'affichage personnalisé de bannières publicitaires pour les entreprises.
+Pour comprendre l'importance de la classification des produits, il faut rappeler le mécanisme d'affichage publicitaire. Lorsqu'une bannière peut être affichée, plusieurs acteurs participent à une enchère en temps réel. 
+Le gagnant obtient le droit d'afficher sa publicité. Critéo doit donc décider rapidement s'il est pertinent d'enchérir pour afficher une publicité à un utilisateur donné, puis se rémunère notamment à partir des clics sur la banière publicitaire ou d'autres indicateurs de performance.
+Il existe donc un arbitrage permanent entre le coût de l'enchère, la probabilité que l'utilisateur clique sur la publicité et la valeur attendue de cette interaction.
+
+Au cœur de ce modèle économique se trouve la nécessité de traiter quotidiennement des catalogues de produits massifs et hétérogènes. Pour afficher la bonne publicité au bon consommateur, une compréhension sémantique fine de chaque article est indispensable. Une classification détaillée des produits, avec un taux d'erreur aussi faible que possible, constitue donc une étape importante de l'ensemble du pipeline de Critéo.
+
+\section{Problématisation et méthodologie adoptée}
+
+Le problème posé consiste à classer 128\,000 produits dans une taxonomie extrêmement granulaire : la taxonomie Google, qui comprend plus de 5\,400 catégories réparties sur sept niveaux de profondeur.
+
+
+Nous disposons donc de deux sources principales :
+\begin{itemize}[leftmargin=1.2cm]
+    \item une taxonomie hiérarchique, dans laquelle les catégories sont organisées par niveaux. Par exemple, \textit{home \& garden} est une catégorie de Niveau 1 contenant des sous-catégories de Niveau 2 comme \textit{furniture} ou \textit{kitchen \& dining} ;
+    \item un catalogue de produits annoté au Niveau 1, c'est-à-dire que chaque produit possède une grande catégorie, mais pas nécessairement sa catégorie fine dans les niveaux profonds.
+\end{itemize}
+
+Une contrainte importante fixée par Critéo était de privilégier des solutions à faible coût de calcul et à faible inference cost. Autrement dit, la classification d'un nouveau produit ne doit pas nécessiter une puissance de calcul excessive ni un inference time trop élevé. Cette contrainte a guidé le choix d'une architecture fondée sur des modèles d'embeddings compacts : peu de paramètres, une dimension vectorielle réduite et une product-level inference rapide plutôt que par appels répétés à de grands modèles génératifs.
+
+Nous proposons une progression analytique qui débute par une revue de la littérature, puis par une exploration statistique globale des données textuelles.
+Nous présentons ensuite l'enrichissement sémantique des catégories à l'aide de LLM locaux.
+Enfin, nous analysons un pipeline en deux étapes : une première étape supervisée pour classer les produits au Niveau 1, puis une seconde étape non supervisée pour affiner la classification vers les niveaux profonds.
+Pour cette seconde étape, nous comparons plusieurs approches et utilisons des metrics adaptées au cadre non supervisé afin d'identifier les pipelines les plus pertinents pour notre problème.
+Nous conclurons enfin par une discussion des résultats obtenus, des limites de notre approche et des pistes d'amélioration possibles.
+
+
+% =======================
+% 2. Revue de littérature
+% =======================
+\chapter{Revue de Littérature}
+\label{chap:literature-review}
+
+La classification automatique de produits combine text classification, information retrieval et hierarchical classification. Le catalogue Critéo présente trois difficultés : des textes courts et bruités, une taxonomie profonde, et une distribution très déséquilibrée des catégories. Kozareva (2015) souligne déjà que la catégorisation e-commerce doit être robuste lexicalement et scalable \cite{kozareva2015everyone}. Liu et al. (2017) formalisent le même problème dans l'extreme text classification : beaucoup de labels, peu d'exemples pour certains labels et un coût de prédiction qui peut devenir prohibitif \cite{liu2017xmlcnn}.
+
+\section{Des sparse representations aux contextual embeddings}
+\label{sec:lit-transformers}
+
+Les approches classiques comme TF-IDF sont peu coûteuses et interprétables, mais elles reposent sur une représentation sparse du texte : chaque document $d$ est décrit par un vecteur de poids lexicaux. Pour un terme $t$ dans un corpus $D$, une forme standard est
+\begin{equation}
+    \text{TF-IDF}(t,d,D)
+    =
+    \frac{f_{t,d}}{\sum_{t'\in d}f_{t',d}}
+    \log\left(\frac{|D|}{|\{d'\in D:t\in d'\}|}\right).
+\end{equation}
+Cette représentation est efficace lorsque les mêmes mots apparaissent dans les produits et dans les catégories, mais elle ne modélise ni synonymie, ni polysémie, ni proximité sémantique entre labels \cite{salton1988term}. Pour une taxonomie e-commerce, cette limite est forte : deux produits proches peuvent employer des vocabulaires différents, et un même mot comme \textit{case}, \textit{cover} ou \textit{support} peut désigner des objets très différents selon le contexte.
+
+Les Transformers ont changé cette situation en produisant des contextual embeddings \cite{vaswani2017,devlin2019bert}. L'opération centrale est la self-attention. Pour des matrices de requêtes, clés et valeurs $Q,K,V$, elle s'écrit
+\begin{equation}
+    \operatorname{Attention}(Q,K,V)
+    =
+    \operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V.
+\end{equation}
+Le terme $QK^\top$ mesure la compatibilité entre tokens, tandis que la normalisation par $\sqrt{d_k}$ stabilise les gradients. Cette opération permet au modèle de pondérer dynamiquement les mots utiles pour comprendre un produit. Dans BERT, l'encoder est pré-entraîné par masked language modeling : certains tokens sont masqués et le modèle maximise leur vraisemblance conditionnelle,
+\begin{equation}
+    \mathcal{L}_{\text{MLM}}
+    =
+    -\sum_{i \in \mathcal{M}}
+    \log p_\theta(x_i \mid x_{\setminus \mathcal{M}}),
+\end{equation}
+où $\mathcal{M}$ désigne les positions masquées. Cette étape apprend des régularités linguistiques générales, mais pas nécessairement les frontières métier de la taxonomie Critéo.
+
+La littérature sur le domain-adaptive pretraining montre aussi qu'un encoder générique peut gagner en qualité lorsqu'il est continué sur des textes proches de la tâche cible \cite{gururangan2020dont}. Cette idée motive une perspective directe pour ce projet : adapter les modèles au vocabulaire e-commerce avant le fine-tuning ou l'inference zéro-shot.
+
+\section{Bi-encoders et semantic retrieval}
+\label{sec:lit-bi-encoders}
+
+Les cross-encoders comparent précisément deux textes, mais ils nécessitent une passe modèle pour chaque couple produit--catégorie. Si $x$ désigne un produit et $c$ une catégorie, un cross-encoder estime directement un score $R_\theta(x,c)$ à partir de la concaténation des deux textes. Cette approche est expressive, mais son coût est $O(NC)$ pour $N$ produits et $C$ catégories.
+
+À l'inverse, les bi-encoders encodent séparément les produits et les catégories \cite{reimers2019sentence,karpukhin2020dpr}. On calcule
+\begin{equation}
+    z_x = f_\theta(x),
+    \qquad
+    z_c = f_\theta(c),
+    \qquad
+    s(x,c)
+    =
+    \cos(z_x,z_c)
+    =
+    \frac{z_x^\top z_c}{\|z_x\|_2\|z_c\|_2}.
+\end{equation}
+Lorsque les embeddings sont normalisés, la cosine similarity devient un simple produit scalaire. Les embeddings de catégories peuvent donc être pré-calculés, et l'inference d'un produit se réduit à une recherche de nearest neighbors. Cette architecture correspond directement à la contrainte industrielle de Critéo : elle remplace des appels répétés à un modèle lourd par des multiplications matricielles batchées. À plus grande échelle, des index ANN comme HNSW réduisent encore le coût de retrieval en remplaçant la recherche exhaustive par une recherche approchée dans un graphe de voisinage \cite{malkov2020hnsw}.
+
+\section{Metric learning pour le Niveau 1}
+\label{sec:triplet}
+
+Un embedding model générique n'est pas nécessairement aligné avec les frontières métier de la taxonomie. Le metric learning structure donc l'espace latent pour rapprocher les produits d'une même classe et éloigner les classes différentes. Pour une ancre $a$, un positif $p$ de même label et un négatif $n$ d'un autre label, la Triplet Loss impose une marge $m$ :
+\begin{equation}
+    \mathcal{L}_{\text{triplet}}(a,p,n)
+    =
+    \max\left(
+    d(f_\theta(a),f_\theta(p))
+    -
+    d(f_\theta(a),f_\theta(n))
+    +m,
+    0
+    \right).
+\end{equation}
+Le batch hard mining choisit, dans un batch, le positif le plus éloigné et le négatif le plus proche. Pour une ancre $i$, on obtient
+\begin{equation}
+    \mathcal{L}_i
+    =
+    \left[
+    \max_{p:y_p=y_i} d(z_i,z_p)
+    -
+    \min_{n:y_n\neq y_i} d(z_i,z_n)
+    +m
+    \right]_+.
+\end{equation}
+Cette stratégie est adaptée à notre problème : les erreurs importantes ne viennent pas seulement de catégories évidentes, mais de frontières fines entre catégories proches ou peu représentées \cite{schroff2015facenet,hermans2017triplet}.
+
+Les approches supervised contrastive généralisent cette intuition en utilisant plusieurs positifs dans le même batch \cite{khosla2020supcon,gao2021simcse}. Pour des embeddings normalisés $z_i$, une température $\tau$ et l'ensemble $P(i)$ des positifs de $i$, la loss peut s'écrire
+\begin{equation}
+    \mathcal{L}_{\text{supcon}}
+    =
+    \sum_i
+    \frac{-1}{|P(i)|}
+    \sum_{p \in P(i)}
+    \log
+    \frac{\exp(z_i^\top z_p/\tau)}
+    {\sum_{a \neq i}\exp(z_i^\top z_a/\tau)}.
+\end{equation}
+La Triplet Loss reste cependant plus simple à intégrer ici, car elle s'accorde naturellement avec une prédiction par nearest prototype.
+
+\section{Taxonomies, prototypes et zero-shot}
+\label{sec:lit-taxonomies}
+\label{sec:lit-zero-shot-enrichment}
+
+Dans une taxonomie profonde, une prédiction peut être vue comme un chemin $h=(c_1,\ldots,c_L)$. Si le score local d'un enfant $c_\ell$ est $s(x,c_\ell)$, une descente greedy choisit
+\begin{equation}
+    \hat{c}_{\ell}
+    =
+    \arg\max_{c\in \operatorname{Child}(\hat{c}_{\ell-1})}
+    s(x,c).
+\end{equation}
+Cette règle est rapide, mais une erreur à un niveau haut contraint tous les niveaux suivants. Les travaux récents sur la hierarchical inference rappellent donc que la méthode de décodage est aussi importante que le modèle de score \cite{plaud2024revisiting}. Une alternative est de scorer un chemin complet par agrégation locale,
+\begin{equation}
+    S(h\mid x)
+    =
+    \sum_{\ell=2}^{L} s(x,c_\ell),
+    \qquad
+    \hat{h}=\arg\max_h S(h\mid x),
+\end{equation}
+puis d'approcher cette maximisation par beam search lorsque l'arbre est trop grand pour une recherche exhaustive. Dans notre cas, cela motive la comparaison entre greedy, beam search, reranking et retrieval de chemins globaux.
+
+Lorsque les niveaux profonds ne sont pas annotés, les catégories peuvent être représentées par plusieurs prototypes textuels : nom, chemin, enfants, descendants et variantes lexicales. Les LLMs ne sont alors pas utilisés comme direct classifiers, mais comme générateurs de contexte sémantique. Cette stratégie est cohérente avec les travaux sur le zero-shot et la génération de données synthétiques \cite{brown2020language,meng2022supergen}, tout en restant beaucoup moins coûteuse qu'un appel LLM par produit.
+
+\section{Assessment sans ground truth profond}
+\label{sec:lit-hierarchical-assessment}
+
+L'accuracy exacte est insuffisante pour les hiérarchies, et impossible à calculer lorsque les labels L2--L7 sont absents. Les hierarchical metrics proposent de créditer partiellement des prédictions partageant des ancêtres communs \cite{costa2007review}. Si deux nœuds $u$ et $v$ ont pour plus proche ancêtre commun $\operatorname{LCA}(u,v)$, une distance d'arbre naturelle est
+\begin{equation}
+    d_T(u,v)
+    =
+    \operatorname{depth}(u)+\operatorname{depth}(v)
+    -
+    2\operatorname{depth}(\operatorname{LCA}(u,v)).
+\end{equation}
+En non supervisé, nous utilisons cette idée pour comparer les pipelines entre eux : accord niveau par niveau, profondeur du premier désaccord, distance dans l'arbre, diversité des chemins et V de Cramér pour les labels discrets. Pour le clustering, le coefficient de silhouette permet d'évaluer si les groupes de produits sont géométriquement cohérents \cite{rousseeuw1987silhouettes}. Pour un produit $i$, si $a(i)$ est sa distance moyenne aux points de son cluster et $b(i)$ la distance moyenne au cluster voisin le plus proche, alors
+\begin{equation}
+    s(i)=\frac{b(i)-a(i)}{\max(a(i),b(i))}.
+\end{equation}
+Une silhouette proche de 1 indique un produit bien assigné à son cluster ; une valeur proche de 0 indique une frontière ambiguë.
+
+\section{Conséquences pour le pipeline}
+\label{sec:lit-l2-l7-consequences}
+
+Cette revue conduit à trois choix. Premièrement, utiliser des bi-encoders pour pré-calculer les embeddings produits, catégories et chemins. Deuxièmement, fine-tuner le Niveau 1 par metric learning, car c'est le seul niveau annoté. Troisièmement, traiter L2--L7 comme un problème de zero-shot retrieval sur une taxonomie enrichie, puis l'évaluer par coûts, confiance interne, accords entre pipelines et audit sémantique externe.
+
+% =======================
+% 3. Statistiques Descriptives
+% =======================
+
+\chapter{Statistiques Descriptives de la Base de Données}
+\label{chap:descriptive-statistics}
+
+Cette étape sert à identifier les contraintes statistiques qui déterminent les choix de modélisation : volumétrie, langue, déséquilibre des catégories et structure de la taxonomie. Les graphiques descriptifs détaillés sont regroupés en \hyperref[sec:data-detailed-annex]{annexe} afin de conserver un corps de rapport plus lisible.
+
+\section{Analyse des données brutes}
+
+Le catalogue initial contient 128\,253 produits. Chaque produit possède un identifiant haché, un titre, une description, une marque et un prix. Les labels disponibles ne couvrent que le Niveau 1 ; les niveaux 2 à 7 ne disposent pas de ground truth fiable et seront donc traités en zéro-shot. La taxonomie cible contient 5\,440 nœuds et atteint une profondeur maximale de 7.
+
+\begin{table}[H]
+    \centering
+    \caption{Résumé des données brutes et des fichiers de référence}
+    \label{tab:raw-dataset-summary}
+    \begin{tabular}{lr}
+        \toprule
+        \textbf{Statistique} & \textbf{Valeur} \\
+        \midrule
+        Produits & 128\,253 \\
+        Catégories annotées au Niveau 1 & 21 \\
+        Catégories dans la taxonomie complète & 5\,440 \\
+        Profondeur maximale & 7 \\
+        Marques distinctes & 3\,970 \\
+        Marques manquantes & 16\,374 \\
+        Prix manquants & 993 \\
+        Prix médian & 75.99 \\
+        Longueur médiane titre / description & 9 / 46 mots \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+L'analyse automatique des langues confirme que le corpus est très fortement anglophone. Le tableau \ref{tab:lang-dist-main} montre que plus de 99{,}8\,\% des produits sont détectés comme anglais. Les autres langues correspondent à des cas marginaux, souvent liés à des descriptions courtes, des noms de marque ou quelques mots étrangers dans un texte majoritairement anglais.
+
+\begin{table}[H]
+    \centering
+    \caption{Distribution des langues détectées dans le dataset produit}
+    \label{tab:lang-dist-main}
+    \begin{tabular}{llrr}
+        \toprule
+        \textbf{Code} & \textbf{Langue} & \textbf{Nombre} & \textbf{Part} \\
+        \midrule
+        en & English & 128\,107 & 99{,}89\,\% \\
+        es & Spanish & 37 & 0{,}03\,\% \\
+        fr & French & 30 & 0{,}02\,\% \\
+        it & Italian & 20 & 0{,}02\,\% \\
+        autres & Autres langues détectées & 59 & 0{,}05\,\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Cette distribution justifie l'utilisation d'embedding models anglais plutôt que de modèles multilingues. Le choix n'est pas seulement linguistique : à qualité comparable sur notre corpus, un modèle anglais compact est généralement plus léger, plus rapide à charger et moins coûteux en inference qu'un modèle multilingue qui doit réserver une partie de sa capacité à représenter de nombreuses langues inutiles ici. Ce point est cohérent avec la contrainte Critéo de privilégier des solutions à faible inference cost.
+
+Le déséquilibre du Niveau 1 est en revanche très marqué : plusieurs grandes classes atteignent 20\,000 produits, tandis que certaines catégories rares ne contiennent que quelques exemples. Ce point motive directement le sampling tempéré utilisé dans le \hyperref[chap:l1-supervised]{chapitre supervisé L1}.
+
+\section{Prétraitement et dataset final}
+
+Le prétraitement joint le catalogue produit et les labels L1 via \texttt{hashed\_external\_id}. Les marques manquantes sont remplacées par \texttt{Unknown}, les prix sont convertis en numérique et imputés par la médiane lorsque nécessaire. Nous construisons ensuite un champ texte unique :
+\begin{center}
+\texttt{Product: \{title\}. Description: \{description\}. Brand: \{brand\}. Price: \{price\} USD.}
+\end{center}
+La description est tronquée à 800 caractères afin de limiter la longueur des séquences et la consommation VRAM. Le dataset final reste compact : la médiane est de 62 mots et le 95\textsuperscript{e} percentile de 146 mots, ce qui rend un \texttt{max\_seq\_length} de 256 raisonnable pour le fine-tuning.
+
+\begin{table}[H]
+    \centering
+    \caption{Structure du dataset final \texttt{preprocessed\_lv2.parquet}}
+    \label{tab:final-dataset-schema}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Colonne} & \textbf{Type d'information} & \textbf{Rôle} \\
+        \midrule
+        \texttt{hashed\_external\_id} & Identifiant haché & Suivi du produit et jointures \\
+        \texttt{text} & Texte consolidé & Entrée principale des modèles d'embeddings \\
+        \texttt{sale\_price} & Variable numérique & Signal auxiliaire conservé \\
+        \texttt{level\_1\_name} & Label catégoriel & Supervision du fine-tuning Niveau 1 \\
+        \texttt{brand\_encoded} & Marque encodée & Variable auxiliaire pour extensions futures \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+Le prix et la marque ne sont pas centraux dans le pipeline final, car le texte suffit déjà à obtenir de bonnes performances au Niveau 1. Ils restent toutefois utiles pour des extensions, notamment un classifier léger combinant embeddings et variables structurées, discuté dans les \hyperref[sec:conclusion-perspectives]{perspectives}.
+
+% =======================
+% 4. Enrichissement des catégories
+% =======================
+\chapter{Enrichissement des Catégories et Prototypes Textuels}
+\label{chap:category-enrichment}
+
+Avant de traiter séparément le Niveau 1 supervisé et les niveaux L2--L7 non supervisés, nous construisons une représentation enrichie commune des catégories. Un nom court comme \textit{hardware} ou \textit{office supplies} ne suffit pas toujours à couvrir le vocabulaire des produits. Nous représentons donc chaque catégorie par plusieurs prototypes : nom canonique, chemin taxonomique, enfants, descendants et variantes lexicales générées par LLM.
+
+Formellement, une catégorie $c$ est représentée par :
+\begin{equation}
+    \mathcal{P}_c =
+    \{p_c^{\text{name}}, p_c^{\text{path}}, p_c^{\text{children}},
+    p_c^{\text{desc}}, p_{c,1}^{\text{lex}}, \ldots, p_{c,r}^{\text{lex}}\}.
+\end{equation}
+Le score produit--catégorie est ensuite calculé par nearest prototype :
+\begin{equation}
+    S(x,c) = \max_{p \in \mathcal{P}_c} \cos\left(f(x), f(p)\right).
+\end{equation}
+Cette agrégation par maximum est volontaire : une catégorie peut être reconnue dès qu'un de ses prototypes est proche du vocabulaire du produit. L'intuition géométrique est que, dans l'espace d'embeddings $\mathbb{R}^d$, le sens d'une catégorie ne correspond pas à un unique point. Il est plus réaliste de le représenter comme une région locale, ou un manifold sémantique $\mathcal{M}_c$, contenant plusieurs formulations possibles d'un même concept. Le nom canonique $p_c^{\text{name}}$ n'est alors qu'un seul échantillon de ce manifold. Si l'on compare un produit uniquement à ce point, on suppose implicitement que toute la catégorie est bien résumée par un seul texte court, ce qui est fragile pour des labels ambigus ou très généraux.
+
+L'enrichissement ajoute plusieurs points proches sémantiquement de la catégorie : chemin hiérarchique, enfants, descendants et variantes lexicales. La règle
+\begin{equation}
+    S(x,c)=\max_{p\in\mathcal{P}_c}\cos(f(x),f(p))
+\end{equation}
+revient donc à approximer la similarité entre le produit et le manifold $\mathcal{M}_c$ par la similarité au prototype le plus proche. En termes géométriques, on remplace une distance à un point par une distance à un ensemble de points. Cela améliore le recouvrement local du manifold : un produit peut être reconnu même s'il emploie un vocabulaire proche d'un enfant ou d'une variante lexicale plutôt que du nom canonique.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.96\textwidth]{figures/category_prototype_manifold_coverage.pdf}
+    \caption{Recouvrement d'un manifold sémantique de catégorie par des prototypes enrichis. La figure est représentée en dimension 3 pour l'intuition, mais elle illustre un espace d'embeddings de dimension beaucoup plus élevée.}
+    \label{fig:category-prototype-manifold-coverage-main}
+\end{figure}
+
+La figure \ref{fig:category-prototype-manifold-coverage-main} illustre cette idée. Sans enrichissement, la catégorie est représentée par un seul point bleu : le nom de départ. La décision dépend donc d'une distance unique. Avec enrichissement, les prototypes verts couvrent plusieurs zones de la même région sémantique. La catégorie n'est pas transformée en une boule parfaite ; elle est plutôt mieux échantillonnée le long de ses directions sémantiques pertinentes.
+
+Cette intuition devient encore plus importante en grande dimension. Deux catégories proches peuvent avoir des manifolds courbés, partiellement proches ou entrelacés. Dans ce cas, un prototype unique peut tomber dans une zone peu discriminante, alors que plusieurs prototypes permettent de mieux représenter les sous-régions qui séparent réellement les catégories.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.96\textwidth]{figures/category_interlaced_manifolds_enrichment.pdf}
+    \caption{Illustration de deux manifolds sémantiques proches ou entrelacés dans un espace d'embeddings. L'ajout de prototypes aide à mieux couvrir les régions pertinentes de chaque catégorie.}
+    \label{fig:category-interlaced-manifolds-enrichment-main}
+\end{figure}
+
+La figure \ref{fig:category-interlaced-manifolds-enrichment-main} montre pourquoi l'enrichissement doit rester contrôlé. Ajouter des prototypes augmente la couverture, mais des prototypes trop génériques peuvent aussi rapprocher artificiellement deux catégories. C'est pourquoi nous utilisons des informations taxonomiques structurées, enfants et descendants, ainsi que des variantes lexicales générées localement, plutôt qu'une génération libre et non contrainte. L'objectif n'est pas de créer beaucoup de texte, mais de mieux échantillonner les zones du manifold qui sont utiles pour le retrieval.
+
+Concrètement, le script \texttt{scripts/generate\_category\_enrichment.py} reconstruit la taxonomie depuis \texttt{taxonomy.txt}, calcule pour chaque nœud son chemin, son parent, ses enfants directs et ses descendants, puis exporte pour chaque niveau deux fichiers : \texttt{level\_L\_categories.csv} et \texttt{level\_L\_reference\_texts.csv}. Ces fichiers séparent les métadonnées de catégorie et les textes de référence directement utilisables par le semantic retrieval.
+
+La génération des variantes lexicales a d'abord été testée par API, mais cette approche était trop lente et fragile pour plusieurs milliers de catégories. Nous sommes donc passés à une génération locale, qui permet de produire les CSV enrichis sans dépendre d'une limite de débit externe. Cette étape est commune à tout le rapport : le \hyperref[chap:l1-supervised]{Niveau 1 supervisé} et les \hyperref[chap:l2-l7-zero-shot]{pipelines L2--L7} réutilisent ces mêmes prototypes enrichis.
+
+% =======================
+% 5. Modélisation supervisée du Niveau 1
+% =======================
+\chapter{Modélisation Supervisée du Niveau 1}
+\label{chap:l1-supervised}
+
+Le Niveau 1 est le seul niveau annoté pour tous les produits. Il sert donc de point d'entrée au pipeline complet : une erreur au Niveau 1 contraint ensuite tout le sous-arbre exploré en L2--L7. Nous n'entraînons pas un flat classifier, mais un metric space où produits et \hyperref[chap:category-enrichment]{prototypes de catégories enrichies} sont comparables par cosine similarity.
+
+\section{Modèle et training objective}
+\label{sec:l1-embedding-choice}
+\label{sec:l1-training-objective}
+
+Le modèle retenu est \texttt{BAAI/bge-small-en-v1.5}. Le choix est guidé par le snapshot MTEB, mais surtout par la contrainte industrielle : modèle compact, embeddings de faible dimension et coût d'inference réduit. Dans la famille des modèles entre environ 10M et 100M paramètres disponibles dans le benchmark, ce modèle offre un compromis solide : 33M paramètres, dimension 384, bonnes performances de classification et de retrieval, tout en restant suffisamment petit pour être fine-tuné sur Kaggle.
+
+\begin{table}[H]
+    \centering
+    \caption{Comparaison de modèles d'embeddings compacts dans le snapshot MTEB utilisé}
+    \label{tab:l1-mteb-compact-embedders-main}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lrrrrr}
+        \toprule
+        \textbf{Modèle} & \textbf{Rang Borda} & \textbf{Param. totaux} & \textbf{Moy. tâche} & \textbf{Classif.} & \textbf{Retrieval} \\
+        \midrule
+        \texttt{GIST-small-Embedding-v0} & 58 & 33M & 64{,}76 & 78{,}15 & 52{,}00 \\
+        \texttt{mini-gte} & 64 & 66M & 65{,}06 & 79{,}95 & 53{,}23 \\
+        \texttt{BAAI/bge-small-en-v1.5} & 74 & 33M & 64{,}30 & 76{,}56 & 53{,}86 \\
+        \texttt{gte-small} & 80 & 33M & 63{,}22 & 74{,}82 & 50{,}26 \\
+        \texttt{e5-small-v2} & 118 & 33M & 61{,}32 & 74{,}58 & 48{,}46 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Configuration finale du fine-tuning supervisé L1}
+    \label{tab:l1-finetuning-hyperparams}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Élément} & \textbf{Valeur} \\
+        \midrule
+        Modèle initial & \texttt{BAAI/bge-small-en-v1.5}, $\approx$ 33M paramètres, dimension 384 \\
+        Training / validation & 115\,427 / 12\,826 produits \\
+        Loss & Batch Hard Triplet Loss, distance cosinus \\
+        Epochs / learning rate / weight decay & 4 / $2 \times 10^{-4}$ / 0{,}01 \\
+        Longueur maximale & 256 tokens \\
+        Sampling retenu & Tempéré, $\alpha=0{,}5$ \\
+        Batch sampler & $P=8$ catégories, $K=4$ exemples, batch effectif 32 \\
+        Optimiseur / scheduler & AdamW / warmup linéaire \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+Pour l'inference, nous réutilisons les prototypes du \hyperref[chap:category-enrichment]{chapitre d'enrichissement}. Pour un produit $x$, la catégorie L1 prédite est celle qui maximise :
+\begin{equation}
+    S(x,c) = \max_{p \in \mathcal{P}_c} \cos\left(f_\theta(x), f_\theta(p)\right).
+\end{equation}
+Le training est réalisé sur Kaggle, car nos machines personnelles ne permettaient pas un fine-tuning complet. La longueur de séquence et le batch size ont été limités pour éviter l'explosion de la VRAM.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.82\textwidth]{figures/l1_triplet_loss_alpha05.pdf}
+    \caption{Évolution de la training loss lors du fine-tuning supervisé du Niveau 1 avec sampling tempéré $\alpha=0{,}5$.}
+    \label{fig:l1-triplet-loss-main}
+\end{figure}
+
+La figure \ref{fig:l1-triplet-loss-main} montre une baisse régulière de la Batch Hard Triplet Loss. Cette baisse ne prouve pas seule la qualité de classification, mais elle confirme que l'espace d'embeddings est effectivement réorganisé : les produits d'une même catégorie sont rapprochés, tandis que les négatifs difficiles sont repoussés. L'évaluation par catégorie est donc indispensable pour vérifier que cette amélioration ne profite pas uniquement aux grandes classes.
+
+\section{Correction du Déséquilibre par Sampling}
+\label{sec:l1-sampling}
+
+Le premier entraînement utilise un sampling naturel : les batches reflètent directement la distribution empirique des catégories. Cette baseline atteint une bonne micro-accuracy car elle optimise surtout les catégories fréquentes. Cependant, elle échoue sur plusieurs catégories rares : ces classes apparaissent trop peu souvent dans les batches pour fournir assez de triplets difficiles et informatifs.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/l1_category_accuracy.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/l1_category_accuracy_balanced_sampling.pdf}
+    \caption{Accuracy top-1 par catégorie sans sampling équilibré, à gauche, et avec balanced sampling uniforme, à droite.}
+    \label{fig:l1-accuracy-baseline-balanced-main}
+\end{figure}
+
+La figure \ref{fig:l1-accuracy-baseline-balanced-main} illustre le problème. Sans sampling équilibré, les grandes catégories dominent l'apprentissage. Le balanced sampling corrige partiellement ce biais en imposant une présence plus régulière des catégories rares dans les batches. Mais cette correction est trop brutale : les catégories très peu représentées sont sur-échantillonnées, ce qui augmente le risque d'overfitting et dégrade les catégories qui fonctionnaient déjà bien.
+
+Le compromis retenu est donc un sampling tempéré, où une catégorie $c$ de taille $n_c$ est tirée avec :
+\begin{equation}
+    \pi_c = \frac{n_c^{\alpha}}{\sum_{c'} n_{c'}^{\alpha}}, \qquad \alpha=0{,}5.
+\end{equation}
+Le paramètre $\alpha$ contrôle l'intensité de la correction. Avec $\alpha=1$, on retrouve le sampling naturel proportionnel à la taille des classes. Avec $\alpha=0$, toutes les catégories sont tirées uniformément. La valeur $\alpha=0{,}5$ correspond donc à un compromis : elle augmente fortement la probabilité d'observer les catégories rares, sans ignorer complètement la structure réelle du catalogue.
+
+\begin{table}[H]
+    \centering
+    \caption{Comparaison globale des stratégies de sampling L1}
+    \label{tab:l1-sampling-results}
+    \begin{tabular}{lrr}
+        \toprule
+        \textbf{Stratégie} & \textbf{Micro-accuracy} & \textbf{Macro-accuracy} \\
+        \midrule
+        Sans sampling & 90{,}1\,\% & 60{,}7\,\% \\
+        Balanced uniforme & 68{,}9\,\% & 66{,}3\,\% \\
+        Tempéré $\alpha=0{,}5$ & \textbf{90{,}6\,\%} & \textbf{82{,}8\,\%} \\
+        Tempéré $\alpha=0{,}3$ & 89{,}9\,\% & 82{,}4\,\% \\
+        Tempéré $\alpha=0{,}8$ & \textbf{92{,}4\,\%} & 80{,}5\,\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Le modèle $\alpha=0{,}5$ est retenu car il maximise la macro-accuracy tout en gardant une micro-accuracy élevée. Le modèle $\alpha=0{,}8$ obtient la meilleure micro-accuracy, mais il corrige moins fortement les catégories rares. À l'inverse, le balanced sampling uniforme améliore certaines petites classes mais sacrifie trop la performance globale. Le choix final privilégie donc le compromis industriel : conserver une très bonne performance sur le catalogue tout en réduisant le risque d'ignorer systématiquement les branches rares.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.98\textwidth]{figures/l1_category_accuracy_sampling_comparison.pdf}
+    \caption{Comparaison des accuracies top-1 par catégorie pour les cinq stratégies de sampling testées.}
+    \label{fig:l1-category-accuracy-sampling-comparison-main}
+\end{figure}
+
+La figure \ref{fig:l1-category-accuracy-sampling-comparison-main} confirme que le gain du sampling tempéré est surtout visible sur les catégories minoritaires. Les stratégies trop équilibrées peuvent faire chuter des catégories fréquentes, tandis que les stratégies trop proches du sampling naturel conservent les défauts initiaux. Le sampling tempéré agit donc comme une régularisation de la distribution des batches.
+
+\section{Visualisation de l'Espace Appris}
+\label{sec:l1-umap-main}
+
+Pour vérifier qualitativement que le fine-tuning modifie bien la géométrie de l'espace latent, nous projetons les embeddings produits en deux dimensions avec UMAP. L'objectif n'est pas de mesurer des distances exactes en 2D, mais d'inspecter les voisinages locaux et la séparation globale des catégories.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{figures/l1_embedding_projection_umap.pdf}
+    \caption{Projection UMAP des embeddings produits après fine-tuning supervisé du Niveau 1.}
+    \label{fig:l1-embedding-umap-main}
+\end{figure}
+
+La figure \ref{fig:l1-embedding-umap-main} montre que les catégories nombreuses forment des régions bien séparées dans l'espace projeté. Cela confirme que le fine-tuning ne se contente pas d'améliorer une métrique numérique : il structure réellement l'espace d'embeddings autour des grandes familles taxonomiques. Les catégories rares restent moins nettes, ce qui est cohérent avec le manque d'exemples et avec les écarts de macro-metrics observés. La projection PCA, moins lisible, est conservée en \hyperref[sec:umap-pca-annex]{annexe} comme comparaison méthodologique.
+
+\section{Final Classification Metrics}
+\label{sec:l1-final-metrics}
+
+\begin{table}[H]
+    \centering
+    \caption{Final classification metrics du modèle Niveau 1 retenu}
+    \label{tab:l1-final-classification-metrics}
+    \begin{tabular}{lr}
+        \toprule
+        \textbf{Metric} & \textbf{Valeur} \\
+        \midrule
+        Accuracy top-1 / micro-$F_1$ & 90{,}6\,\% \\
+        Accuracy top-3 & 95{,}5\,\% \\
+        Accuracy top-5 & 97{,}1\,\% \\
+        Macro-precision & 74{,}8\,\% \\
+        Macro-recall / balanced accuracy & 82{,}8\,\% \\
+        Macro-$F_1$ & 77{,}7\,\% \\
+        Weighted $F_1$ & 90{,}9\,\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\textwidth]{figures/l1_confusion_matrix_normalized.pdf}
+    \caption{Confusion matrix normalisée par catégorie vraie pour le modèle Niveau 1 retenu.}
+    \label{fig:l1-confusion-matrix-normalized-main}
+\end{figure}
+
+La confusion matrix de la figure \ref{fig:l1-confusion-matrix-normalized-main} complète les metrics globales. Elle permet d'identifier les confusions résiduelles entre catégories proches et de vérifier que le modèle ne se contente pas de prédire les classes majoritaires. Le Niveau 1 est donc suffisamment robuste pour servir de point d'entrée au pipeline L2--L7. Le top-5 à 97{,}1\,\% indique aussi que, même lorsque le top-1 est incorrect, la bonne catégorie reste souvent proche dans l'espace sémantique, ce qui justifie les stratégies de beam search et reranking discutées ensuite.
+
+% =======================
+% 6. Recherche zéro-shot pour L2--L7
+% =======================
+\chapter{Recherche Zéro-Shot pour L2--L7}
+\label{chap:l2-l7-zero-shot}
+
+Les niveaux 2 à 7 ne disposent pas de labels supervisés fiables. Nous ne pouvons donc pas annoncer une accuracy classique ; nous comparons plutôt des hypothèses taxonomiques produites par plusieurs pipelines. Tous partent du même Niveau 1 fine-tuné, puis utilisent les \hyperref[chap:category-enrichment]{catégories enrichies} pour descendre ou retrouver un chemin dans la taxonomie.
+
+\section{Embeddings partagés et choix de l'encodeur}
+\label{sec:l2-l7-embedder-comparison}
+
+Deux encodeurs compacts sont testés : \texttt{Qwen3} et \texttt{Jasper}. Ils encodent les mêmes 128\,253 produits, 32\,884 prototypes enrichis et 5\,406 chemins taxonomiques. Les noms complets des modèles sont reportés dans le tableau \ref{tab:l2-l7-embedding-generation-comparison}.
+
+\begin{table}[H]
+    \centering
+    \caption{Coût de génération des embeddings partagés L2--L7}
+    \label{tab:l2-l7-embedding-generation-comparison}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lrrrrrr}
+        \toprule
+        \textbf{Encodeur} & \textbf{Dim.} & \textbf{Temps export} & \textbf{Textes/s} & \textbf{Taille matrices} & \textbf{Mémoire GPU pic} & \textbf{Coût token-dim} \\
+        \midrule
+        \texttt{Qwen3-Embedding-0.6B} & 1024 & 163{,}2 min & 17{,}0 & 650{,}6 MB & 7659{,}0 MB & 15\,175{,}3 M \\
+        \texttt{Jasper-Token-Compression-600M} & 2048 & 121{,}6 min & 22{,}8 & 1301{,}1 MB & 2774{,}9 MB & 30\,350{,}6 M \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+Jasper encode plus vite dans notre run Kaggle, mais ses embeddings de dimension 2048 doublent la taille mémoire et le coût vectoriel par rapport à Qwen3. Ce point est visible dans la figure \ref{fig:l2-l7-embedding-generation-cost-main}. Pour un catalogue très volumineux, le coût le plus important n'est pas seulement le temps initial d'encodage : c'est aussi la taille des matrices à stocker, charger, transférer et comparer à chaque étape de retrieval. Comme la contrainte industrielle porte surtout sur le coût d'inference et le stockage à grande échelle, Qwen3 est le choix le plus cohérent pour la suite.
+
+\section{Méthodologie d'Assessment Non Supervisé}
+\label{sec:l2-l7-unsupervised-metrics}
+
+Nous utilisons trois familles de metrics. La première mesure le coût d'inference. Pour un pipeline $m$ appliqué à $N$ produits, nous mesurons le temps total $T_m$, le temps moyen
+\begin{equation}
+    \bar{t}_m=\frac{T_m}{N},
+\end{equation}
+le débit $N/T_m$, la mémoire chargée et un coût vectoriel approximatif. Si le pipeline calcule $q_m$ produits scalaires entre embeddings de dimension $d$, alors le nombre d'opérations scalaires est approximé par $q_m d$. Cette metric ne remplace pas une mesure réelle de latence, mais elle permet de comparer deux embedders de dimensions différentes, notamment Qwen3 en dimension 1024 et Jasper en dimension 2048.
+
+La deuxième famille mesure la confiance interne. Pour les pipelines qui produisent plusieurs candidats, la marge top-1/top-2 est
+\begin{equation}
+    \Delta(x)=S_1(x)-S_2(x),
+\end{equation}
+où $S_1$ et $S_2$ sont les scores des deux meilleurs chemins. Une marge faible signifie que la décision est instable : deux chemins taxonomiques restent presque aussi plausibles. Nous mesurons aussi la profondeur moyenne prédite, le nombre de chemins distincts, la part du chemin le plus fréquent et l'entropie de la distribution des chemins :
+\begin{equation}
+    H=-\sum_h p(h)\log p(h).
+\end{equation}
+Une méthode qui prédit très profond avec une marge faible est plus risquée qu'une méthode qui s'arrête plus tôt mais avec une décision plus nette.
+
+La troisième famille compare les pipelines entre eux. Le Niveau 1 est fixé par le même modèle fine-tuné pour toutes les méthodes ; il ne constitue donc pas une metric de comparaison pertinente. La comparaison porte sur les niveaux réellement non supervisés : accord exact sur le chemin complet, accord niveau par niveau L2--L7 et V de Cramér pour mesurer l'association entre labels discrets. Pour deux pipelines $A$ et $B$, l'accord au niveau $\ell$ est
+\begin{equation}
+    \operatorname{Acc}_{\ell}(A,B)
+    =
+    \frac{1}{n_\ell}
+    \sum_{i=1}^{n_\ell}
+    \mathbf{1}
+    \left[
+    \hat{y}^{A}_{i,\ell}
+    =
+    \hat{y}^{B}_{i,\ell}
+    \right].
+\end{equation}
+Les définitions détaillées sont données en \hyperref[sec:l2-l7-metrics-annex]{annexe}, avec le V de Cramér en \hyperref[sec:cramers-v-annex]{annexe dédiée}.
+
+Enfin, nous ajoutons un audit NLP externe. Pour chaque produit, les chemins proposés par les pipelines sont scorés par un bi-encoder et par un cross-encoder. Ces scores ne remplacent pas une vérité terrain ; ils servent à comparer les propositions concurrentes d'un même produit.
+
+\section{Pipelines Comparés}
+\label{sec:l2-l7-pipeline-local-decoding}
+\label{sec:l2-l7-pipeline-clustering}
+\label{sec:l2-l7-pipeline-global-path}
+
+\begin{table}[H]
+    \centering
+    \caption{Résumé des pipelines zéro-shot L2--L7}
+    \label{tab:l2-l7-pipeline-summary}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{p{3.1cm}p{5.4cm}p{4.0cm}p{4.0cm}}
+        \toprule
+        \textbf{Pipeline} & \textbf{Principe} & \textbf{Avantage} & \textbf{Limite} \\
+        \midrule
+        Greedy & Descente locale : à chaque niveau, choisir l'enfant le plus proche du produit. & Très rapide, faible mémoire, simple à industrialiser. & Une erreur haute dans l'arbre est irréversible. \\
+        Beam search & Conserver plusieurs chemins candidats à chaque niveau. & Réduit le risque d'une décision locale trop précoce. & Coût supérieur au greedy et marges souvent faibles. \\
+        Beam + reranker & Reranker les meilleurs chemins du beam avec un modèle externe. & Meilleure qualité NLP brute. & Trop coûteux pour tous les produits. \\
+        Clustering & Grouper les produits par branche L1, puis associer les clusters aux enfants taxonomiques. & Capture une structure collective du catalogue. & Peut créer des groupes artificiels si certaines catégories sont absentes. \\
+        Global path & Comparer directement le produit aux embeddings des chemins complets. & Très diversifié et évite la descente locale. & Marges faibles et risque de chemins concurrents proches. \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\subsection{Pipeline 1 : Décodage Hiérarchique Local}
+\label{sec:l2-l7-pipeline1-local-decoding-main}
+
+Le premier pipeline suit explicitement la structure de la taxonomie. Après la prédiction du Niveau 1 par le modèle fine-tuné, on se place dans le sous-arbre correspondant et on compare le produit aux enfants du nœud courant. Pour un produit $x$, un nœud parent $u$ et un enfant candidat $c\in\operatorname{Child}(u)$, le score local est
+\begin{equation}
+    s(x,c)
+    =
+    \max_{p\in\mathcal{P}_c}
+    \cos(g(x),g(p)),
+\end{equation}
+où $g$ est l'encodeur L2--L7 et $\mathcal{P}_c$ l'ensemble des prototypes enrichis de la catégorie $c$.
+
+La variante greedy choisit l'enfant de score maximal à chaque niveau :
+\begin{equation}
+    \hat{c}_{\ell}
+    =
+    \arg\max_{c\in\operatorname{Child}(\hat{c}_{\ell-1})}
+    s(x,c).
+\end{equation}
+Elle est très rapide car elle ne conserve qu'un seul chemin. Sa limite est la propagation d'erreur : une mauvaise décision au Niveau 2 empêche ensuite d'explorer la bonne branche aux niveaux inférieurs.
+
+Le beam search corrige partiellement ce défaut en conservant plusieurs chemins partiels. Un chemin $h=(\hat{c}_1,\ldots,\hat{c}_\ell)$ reçoit un score cumulé :
+\begin{equation}
+    S(h\mid x)=\sum_{t=2}^{\ell}s(x,\hat{c}_t).
+\end{equation}
+À chaque profondeur, seuls les $B$ meilleurs chemins sont conservés. Cette méthode est plus coûteuse que le greedy, mais elle évite de prendre une décision irréversible trop tôt. Enfin, la variante beam + reranker conserve les meilleurs chemins du beam puis les reclasse avec un modèle de ranking externe. Le détail algorithmique complet du beam search et du reranking est donné en \hyperref[sec:beam-reranker-annex]{annexe}.
+
+\subsection{Pipeline 2 : Clustering Hiérarchique Contraint par la Taxonomie}
+\label{sec:l2-l7-pipeline2-clustering-main}
+
+Le deuxième pipeline exploite une hypothèse différente : les produits d'une même branche taxonomique doivent former des groupes dans l'espace d'embeddings. Pour prédire le Niveau 2 dans une branche L1 donnée, on récupère les produits rattachés à cette branche par le modèle L1, puis on lit dans la taxonomie le nombre d'enfants $K$ du nœud. On entraîne alors un clustering avec $K$ clusters dans les embeddings produits :
+\begin{equation}
+    \min_{\mu_1,\ldots,\mu_K}
+    \sum_{i=1}^{n}
+    \min_{k\in\{1,\ldots,K\}}
+    \|z_i-\mu_k\|_2^2.
+\end{equation}
+Chaque centroïde $\mu_k$ doit ensuite être associé à une catégorie enfant. Nous construisons une matrice de coût fondée sur la similarité entre centroïdes et prototypes enrichis :
+\begin{equation}
+    C_{k,c}
+    =
+    -\max_{p\in\mathcal{P}_c}\cos(\mu_k,g(p)).
+\end{equation}
+L'affectation cluster--catégorie est résolue globalement, par exemple avec une affectation hongroise lorsque le problème est équilibré. Le même principe est ensuite répété niveau par niveau. Cette méthode peut révéler une structure collective du catalogue, mais elle suppose que les catégories taxonomiques correspondent bien à des clusters géométriques observables. Si une catégorie enfant n'est pas présente dans les produits ou si deux enfants sont lexicalement très proches, le clustering peut créer des groupes artificiels.
+
+\subsection{Pipeline 3 : Retrieval de Chemins Globaux}
+\label{sec:l2-l7-pipeline3-global-path-main}
+
+Le troisième pipeline évite la descente locale. Chaque chemin complet de la taxonomie est transformé en texte, par exemple en concaténant les noms des catégories du Niveau 2 jusqu'au nœud final, puis encodé une seule fois. Pour un produit $x$, la prédiction est obtenue par nearest neighbor parmi les chemins compatibles avec le Niveau 1 prédit :
+\begin{equation}
+    \hat{h}
+    =
+    \arg\max_{h\in\mathcal{H}(\hat{c}_1)}
+    \cos(g(x),g(h)).
+\end{equation}
+Cette méthode compare directement le produit à une hypothèse taxonomique globale. Elle peut donc éviter certaines erreurs locales du greedy, car elle ne choisit pas séparément chaque niveau. En revanche, plusieurs chemins complets peuvent être très proches lexicalement, ce qui produit souvent des marges top-1/top-2 faibles. Le global path est donc utile comme baseline de diversité et comme méthode de désaccord, mais il est moins directement interprétable qu'une descente hiérarchique locale.
+
+\section{Résultats Synthétiques}
+\label{sec:l2-l7-pipeline-agreement}
+
+Le tableau suivant rassemble les résultats essentiels. Il ne mesure pas une accuracy, mais le compromis entre coût, profondeur, diversité et concentration des prédictions.
+
+\begin{table}[H]
+    \centering
+    \caption{Synthèse des résultats L2--L7 par embedder et par pipeline}
+    \label{tab:l2-l7-embedder-pipeline-results}
+    \scriptsize
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llrrrrrr}
+        \toprule
+        \textbf{Embedder} & \textbf{Pipeline} & \textbf{ms/prod.} & \textbf{M ops/prod.} & \textbf{Mémoire} & \textbf{Prof. moy.} & \textbf{Chemins} & \textbf{Top chemin} \\
+        \midrule
+        Qwen3 & Greedy & 1{,}14 & 0{,}39 & 629 MB & 3{,}08 & 2\,186 & 2{,}1\,\% \\
+        Qwen3 & Beam & 2{,}71 & 0{,}62 & 629 MB & 3{,}22 & 2\,461 & 1{,}8\,\% \\
+        Qwen3 & Beam + reranker & 16{,}17 & 0{,}62 + rerank & 629 MB & 3{,}21 & 2\,679 & 1{,}5\,\% \\
+        Qwen3 & Clustering & 0{,}71 & 0{,}42 & 629 MB & 3{,}01 & 3\,121 & 2{,}6\,\% \\
+        Qwen3 & Global path & 1{,}67 & 0{,}51 & 651 MB & 3{,}37 & 3\,337 & 1{,}8\,\% \\
+        Jasper & Greedy & 1{,}12 & 0{,}77 & 1259 MB & 3{,}01 & 2\,274 & 8{,}5\,\% \\
+        Jasper & Beam + reranker & 15{,}82 & 1{,}21 + rerank & 1259 MB & 3{,}13 & 2\,831 & 2{,}8\,\% \\
+        Jasper & Global path & 1{,}67 & 1{,}01 & 1301 MB & 3{,}16 & 3\,013 & 8{,}4\,\% \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+Greedy est le meilleur compromis coût/inference : environ 1{,}14 ms par produit avec Qwen3. Beam + reranker améliore la sélection finale, mais coûte environ 16 ms par produit. La figure \ref{fig:l2-l7-pipeline-runtime-cost-main} rend visible ce compromis : le passage de greedy à beam augmente modérément le coût, tandis que l'ajout d'un reranker change d'ordre de grandeur. Global path est plus diversifié, notamment avec Qwen3, mais sa marge top-1/top-2 reste faible. Les figures et matrices détaillées de divergence sont données en \hyperref[sec:l2-l7-family3-matrices-annex]{annexe}.
+
+\begin{table}[H]
+    \centering
+    \caption{Synthèse globale des accords entre pipelines}
+    \label{tab:l2-l7-family3-global-summary}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lrrrrrrrr}
+        \toprule
+        \textbf{Embedder} & \textbf{Produits} & \textbf{Même chemin} & \textbf{Chemins/prod.} & \textbf{Accord moyen} & \textbf{$V$ moyen} & \textbf{Même L2} & \textbf{Même L3} & \textbf{Dernier niveau commun} \\
+        \midrule
+        Qwen3 & 128\,253 & 1{,}3\,\% & 3{,}42 & 23{,}6\,\% & 0{,}426 & 15{,}0\,\% & 13{,}1\,\% & 2{,}49 \\
+        Jasper & 128\,253 & 1{,}9\,\% & 3{,}24 & 27{,}2\,\% & 0{,}446 & 13{,}6\,\% & 19{,}8\,\% & 2{,}46 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf}
+    \caption{Vitesse de divergence entre pipelines selon la profondeur taxonomique.}
+    \label{fig:l2-l7-family3-divergence-depth-main}
+\end{figure}
+
+Les pipelines convergent rarement tous vers le même chemin complet. Cette divergence est attendue : en absence de labels L2--L7, chaque pipeline explore une hypothèse différente. La figure \ref{fig:l2-l7-family3-divergence-depth-main} montre que le désaccord augmente rapidement avec la profondeur. Les méthodes peuvent encore partager une décision générale en L2, puis diverger en L3 ou L4 lorsque les distinctions deviennent plus fines. Greedy et beam restent les méthodes les plus proches, tandis que le clustering est volontairement plus éloigné car il optimise une partition collective plutôt qu'une décision produit par produit.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_qwen/family3_exact_path_agreement_heatmap.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_jasper/family3_exact_path_agreement_heatmap.pdf}
+    \caption{Matrices d'accord exact sur le chemin complet pour Qwen3, à gauche, et Jasper, à droite.}
+    \label{fig:l2-l7-exact-path-agreement-main}
+\end{figure}
+
+La figure \ref{fig:l2-l7-exact-path-agreement-main} confirme que les accords forts sont concentrés sur les variantes proches du même pipeline, notamment greedy et beam. Les désaccords ne doivent pas être lus comme des erreurs certaines, car aucun ground truth L2--L7 n'est disponible. Ils servent plutôt à identifier les produits pour lesquels une validation humaine, un reranker ou une stratégie hybride serait utile.
+
+\begin{table}[H]
+    \centering
+    \caption{Audit NLP complet : score moyen, win rate et rang moyen}
+    \label{tab:l2-l7-full-biencoder-audit}
+    \scriptsize
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llrrrrrr}
+        \toprule
+        \textbf{Scorer} & \textbf{Pipeline} & \textbf{Score Qwen} & \textbf{Win Qwen} & \textbf{Rang Qwen} & \textbf{Score Jasper} & \textbf{Win Jasper} & \textbf{Rang Jasper} \\
+        \midrule
+        Bi-encoder & Greedy & 0{,}260 & 29{,}5\,\% & 2{,}50 & 0{,}262 & 31{,}9\,\% & 2{,}39 \\
+        Bi-encoder & Global path & 0{,}288 & 20{,}1\,\% & 2{,}94 & 0{,}293 & 19{,}3\,\% & 2{,}97 \\
+        Cross-encoder & Greedy & -4{,}724 & 17{,}0\,\% & 2{,}92 & -4{,}654 & 18{,}3\,\% & 2{,}81 \\
+        Cross-encoder & Beam + reranker & -4{,}248 & 37{,}5\,\% & 2{,}15 & -4{,}221 & 39{,}4\,\% & 2{,}14 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+L'audit NLP clarifie le compromis. Le bi-encoder favorise le global path en score moyen, car ce pipeline optimise directement une similarité produit--chemin global. Cependant, le greedy reste très compétitif en win rate : il arrive souvent en première position parmi les cinq propositions, même si son score moyen n'est pas maximal. Le cross-encoder favorise nettement beam + reranker, ce qui confirme sa meilleure qualité brute ; toutefois cette option est environ quatorze fois plus lente que greedy. Le détail complet de l'audit NLP et le coût du scoring sont reportés en \hyperref[sec:l2-l7-nlp-audit-annex]{annexe}.
+
+\section{Comparaison Globale et Choix Opérationnel}
+\label{sec:l2-l7-operational-choice}
+
+Le choix opérationnel retenu est \textbf{Qwen3 + greedy}. Qwen3 réduit le coût vectoriel et la taille mémoire par rapport à Jasper. Greedy est suffisamment cohérent pour constituer une première passe industrielle, avec un coût très faible et une lecture simple. Beam + reranker est conservé comme seconde passe pour les produits incertains : faible marge locale, désaccord fort entre pipelines ou branche L1 connue comme instable. Le clustering reste utile comme audit structurel, et global path comme baseline de diversité.
+
+En pratique, la stratégie recommandée est donc hybride : greedy avec Qwen3 par défaut, comparaison automatique avec global path pour détecter les désaccords, puis reranking sélectif uniquement sur les produits ambigus. Cette organisation respecte la contrainte de faible coût demandée par Critéo tout en conservant une voie d'amélioration qualitative pour les cas difficiles.
+
+% =======================
+% 7. Conclusion
+% =======================
+\chapter{Conclusion et Perspectives}
+\label{chap:conclusion}
+
+Ce projet avait pour objectif de proposer une méthode de catégorisation produit compatible avec les contraintes exprimées par Critéo : limiter le coût de calcul, éviter des modèles trop lourds en inference et rester capable de traiter une taxonomie profonde. La solution retenue repose sur un pipeline hybride. Elle combine un Niveau 1 supervisé, car nous disposons de labels fiables à ce niveau, et une recherche zéro-shot pour les niveaux 2 à 7, où aucune vérité terrain exploitable n'est disponible.
+
+\section{Synthèse du Pipeline Retenu}
+\label{sec:conclusion-pipeline-summary}
+
+La première brique du pipeline est l'\hyperref[chap:category-enrichment]{enrichissement des catégories}. Au lieu de représenter chaque nœud taxonomique par son seul nom canonique, nous construisons un ensemble de prototypes textuels : nom, chemin hiérarchique, enfants, descendants et variantes lexicales générées par LLM. Cette étape augmente la couverture sémantique des catégories. Elle est particulièrement utile lorsque le nom d'une catégorie est court ou ambigu. Géométriquement, l'enrichissement revient à mieux échantillonner la région sémantique associée à une catégorie dans l'espace d'embeddings, puis à comparer un produit au prototype le plus proche par cosine similarity.
+
+La deuxième brique est la \hyperref[chap:l1-supervised]{modélisation supervisée du Niveau 1}. Nous avons choisi \texttt{BAAI/bge-small-en-v1.5}, un modèle compact d'environ 33 millions de paramètres et de dimension 384, car il offre un bon compromis entre qualité d'embeddings, coût mémoire et faisabilité du fine-tuning. Le modèle est fine-tuné avec une \textit{Batch Hard Triplet Loss} afin d'apprendre un metric space adapté à la taxonomie Critéo. Le sampling tempéré avec $\alpha=0{,}5$ est retenu car il corrige fortement les catégories rares sans sacrifier la performance globale : le modèle final atteint 90{,}6\,\% d'accuracy top-1, 95{,}5\,\% de top-3 accuracy, 97{,}1\,\% de top-5 accuracy et un weighted $F_1$ de 90{,}9\,\%.
+
+La troisième brique concerne la \hyperref[chap:l2-l7-zero-shot]{recherche zéro-shot pour les niveaux 2 à 7}. Comme ces niveaux ne disposent pas de labels supervisés, nous avons comparé plusieurs pipelines à partir des catégories enrichies : greedy decoding, beam search, beam search avec reranker, clustering hiérarchique des produits et retrieval de chemins globaux. L'évaluation ne peut pas être une accuracy classique ; elle repose donc sur trois familles de metrics : coût d'inference, confiance interne et accord entre pipelines, complétées par un audit NLP bi-encoder et cross-encoder.
+
+Le choix opérationnel final est \textbf{Qwen3-Embedding-0.6B + greedy decoding}. Qwen3 est retenu pour L2--L7 car ses embeddings de dimension 1024 divisent par deux la taille des matrices et le coût vectoriel par rapport à Jasper. Le greedy est retenu comme méthode standard car il offre le meilleur compromis entre coût et qualité : environ 1{,}14 ms par produit pour le décodage L2--L7 avec Qwen3, contre environ 16 ms pour beam + reranker. Le beam + reranker reste la meilleure option lorsque l'on maximise uniquement le score cross-encoder, mais son coût le rend préférable en seconde passe sur les produits incertains. Le pipeline recommandé est donc hybride : greedy par défaut, puis reranking sélectif lorsque la marge est faible, lorsque plusieurs pipelines divergent ou lorsqu'une branche taxonomique est connue comme instable.
+
+\section{Passage à l'Échelle et Coût d'Inference}
+\label{sec:conclusion-scale-up}
+
+Le passage à l'échelle dépend de deux étapes très différentes. La première est l'encodage des textes produits, qui est coûteux car elle nécessite un forward pass dans le modèle d'embeddings. La seconde est le décodage taxonomique, qui consiste principalement en calculs de similarité avec les prototypes enrichis. Dans nos mesures, la génération des embeddings Qwen3 sur 128\,253 produits et les textes de référence prend 163{,}2 minutes, soit environ 17 textes par seconde. Une fois les embeddings disponibles, le greedy L2--L7 ne prend qu'environ 1{,}14 ms par produit.
+
+\begin{table}[H]
+    \centering
+    \caption{Extrapolation du coût d'inference avec Qwen3 + greedy à partir des mesures observées}
+    \label{tab:conclusion-scale-up}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lrrrr}
+        \toprule
+        \textbf{Volume} & \textbf{Temps embedding Qwen3} & \textbf{Temps greedy L2--L7} & \textbf{Stockage embeddings Qwen3 fp16} & \textbf{Lecture opérationnelle} \\
+        \midrule
+        1 million de produits & $\approx$ 16{,}3 h & $\approx$ 19 min & $\approx$ 1{,}9 GB & Faisable sur une seule machine GPU si le traitement est batché \\
+        1 milliard de produits & $\approx$ 681 jours & $\approx$ 13{,}2 jours & $\approx$ 1{,}9 TB & Nécessite sharding, parallélisation multi-GPU et stockage distribué \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+Ces ordres de grandeur montrent que le décodage greedy n'est pas le principal frein : même à très grande échelle, son coût reste linéaire et facilement parallélisable. Le vrai goulet d'étranglement est l'encodage des produits par le modèle d'embeddings. Pour $M$ produits, le temps observé peut être résumé par :
+\begin{equation}
+    T_{\text{embed}}(M) \approx \frac{M}{17}\ \text{secondes},
+    \qquad
+    T_{\text{greedy}}(M) \approx 1{,}14 \times 10^{-3} M\ \text{secondes}.
+\end{equation}
+Avec $N$ GPU NVIDIA H100 et un facteur d'accélération réel $\gamma$ par rapport au run Kaggle observé, l'encodage peut être approximé par $T_{\text{embed}}(M)/(N\gamma)$ si les produits sont répartis en shards indépendants et si l'I/O ne devient pas limitante. Pour un milliard de produits, cela signifie que le passage à l'échelle est réaliste uniquement si l'encodage est massivement batché, distribué et éventuellement pré-calculé hors ligne. En revanche, les matrices de prototypes de catégories restent petites à l'échelle industrielle : quelques centaines de MB pour Qwen3. Elles peuvent donc être gardées en mémoire GPU ou CPU et réutilisées pour de très grands volumes.
+
+Le pipeline passe donc correctement à l'échelle du point de vue algorithmique, car les coûts sont essentiellement linéaires en nombre de produits et en nombre de prototypes. Il passe moins bien à l'échelle si l'on ajoute systématiquement un reranker ou un cross-encoder : ces modèles évaluent explicitement des paires produit--chemin et deviennent rapidement coûteux. C'est la raison pour laquelle le reranking doit rester sélectif. Une stratégie industrielle raisonnable serait de traiter tous les produits par batch avec le greedy, puis d'envoyer seulement les produits à faible marge vers une file de reranking ou de validation humaine.
+
+\section{Perspectives d'Amélioration}
+\label{sec:conclusion-perspectives}
+
+Une première amélioration consiste à réentraîner les modèles sur le vocabulaire spécifique du catalogue produit. Comme discuté dans la \hyperref[sec:lit-transformers]{partie sur les Transformers et le domain-adaptive pretraining}, le domain-adaptive pretraining permet d'adapter un language model à un domaine lexical particulier avant le fine-tuning supervisé. Dans notre cas, les descriptions produits contiennent des marques, des abréviations, des variantes commerciales et des formulations propres au e-commerce. Un préentraînement supplémentaire sur ce corpus pourrait améliorer la qualité des embeddings avant même l'étape de triplet loss.
+
+Une deuxième amélioration concerne l'utilisation du prix et des variables structurées. Le pipeline actuel repose presque entièrement sur le texte. Or certaines branches de Niveau 1 peuvent être partiellement séparées par des signaux numériques ou catégoriels : prix, marque, vendeur, disponibilité ou attributs produits. Une extension naturelle serait d'entraîner un classifier léger au-dessus des embeddings L1, par exemple un modèle prenant en entrée l'embedding produit, le prix normalisé et éventuellement un encodage de la marque. Cette approche ne remplacerait pas le metric learning, mais pourrait corriger certaines confusions lorsque le texte seul est insuffisant.
+
+Une troisième piste est d'améliorer les niveaux 2 à 7 par apprentissage semi-supervisé. Les prédictions greedy à forte marge peuvent servir de pseudo-labels, tandis que les produits à faible marge peuvent être envoyés vers une annotation humaine active. On obtiendrait progressivement un jeu de validation L2--L7 permettant de remplacer l'évaluation indirecte par des metrics supervisées. Cette boucle active learning est probablement la voie la plus fiable pour dépasser les limites du zéro-shot.
+
+Plusieurs variantes de pipeline peuvent également être testées. Un premier axe consiste à apprendre un reranker spécialisé sur les chemins taxonomiques Critéo, moins coûteux qu'un cross-encoder généraliste. Un deuxième axe consiste à scorer les chemins complets dès le départ, puis à contraindre le résultat par la taxonomie pour éviter les chemins incohérents. Un troisième axe consiste à combiner greedy et global path par ensembling : si les deux méthodes sont d'accord, la prédiction est acceptée ; sinon, un beam search ou un reranker est déclenché. Enfin, le clustering hiérarchique peut être conservé comme outil d'audit structurel pour détecter des sous-groupes produits qui ne correspondent pas proprement à la taxonomie existante.
+
+L'inference peut aussi être fortement optimisée. Les embeddings produits doivent être calculés par grands batches, en mixed precision, avec padding dynamique et éventuellement quantization. Les embeddings de catégories et de chemins doivent être pré-calculés, normalisés et gardés en mémoire. Les similarités peuvent être accélérées par multiplication matricielle batchée ou par un index ANN de type FAISS/HNSW lorsque le nombre de prototypes augmente. Pour les volumes très importants, il faut découper le catalogue en shards, distribuer les produits sur plusieurs GPU, écrire les embeddings en parquet ou en format binaire compact, puis exécuter le décodage taxonomique en streaming afin d'éviter de charger tout le catalogue en RAM. Ces optimisations ne changent pas la méthode statistique, mais elles sont nécessaires pour transformer le pipeline expérimental en système industriel.
+
+En résumé, le projet montre qu'une approche par embeddings compacts, catégories enrichies et décodage hiérarchique léger constitue une solution crédible pour une taxonomie profonde en contexte peu annoté. Le Niveau 1 est suffisamment robuste pour servir de point d'entrée supervisé, et le greedy zéro-shot fournit une baseline L2--L7 peu coûteuse. Les limites principales ne sont pas seulement algorithmiques : elles viennent surtout de l'absence de ground truth profonde et du coût d'encodage à très grande échelle. Les prochaines étapes doivent donc combiner adaptation au domaine, enrichissement progressif des labels et optimisation d'inference distribuée.
+
+% =======================
+% 9. Bibliographie
+% =======================
+\chapter{Bibliographie}
+\label{chap:bibliography}
+\begin{thebibliography}{99}
+    \bibitem{brown2020language} Brown, T. B., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D., Dhariwal, P., ... \& Amodei, D. (2020). Language models are few-shot learners. \textit{Advances in neural information processing systems}, 33, 1877-1901. \url{https://arxiv.org/abs/2005.14165}
+    \bibitem{costa2007review} Costa, E. P., Lorena, A. C., Carvalho, A. C. P. L. F. de, \& Freitas, A. A. (2007). A Review of Performance Evaluation Measures for Hierarchical Classifiers. In \textit{AAAI Workshop on Evaluation Methods for Machine Learning II}. \url{https://m.aaai.org/Library/Workshops/2007/ws07-05-001.php}
+    \bibitem{devlin2019bert} Devlin, J., Chang, M.-W., Lee, K., \& Toutanova, K. (2019). BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding. In \textit{Proceedings of NAACL-HLT 2019}. \url{https://arxiv.org/abs/1810.04805}
+    \bibitem{gao2021simcse} Gao, T., Yao, X., \& Chen, D. (2021). SimCSE: Simple Contrastive Learning of Sentence Embeddings. In \textit{Proceedings of EMNLP 2021} (pp. 6894--6910). \url{https://arxiv.org/abs/2104.08821}
+    \bibitem{gururangan2020dont} Gururangan, S., Marasović, A., Swayamdipta, S., Lo, K., Beltagy, I., Downey, D., \& Smith, N. A. (2020). Don't Stop Pretraining: Adapt Language Models to Domains and Tasks. In \textit{Proceedings of ACL 2020}. \url{https://arxiv.org/abs/2004.10964}
+    \bibitem{hermans2017triplet} Hermans, A., Beyer, L., \& Leibe, B. (2017). In Defense of the Triplet Loss for Person Re-Identification. \textit{arXiv preprint arXiv:1703.07737}. \url{https://arxiv.org/abs/1703.07737}
+    \bibitem{karpukhin2020dpr} Karpukhin, V., Oguz, B., Min, S., Lewis, P., Wu, L., Edunov, S., Chen, D., \& Yih, W.-t. (2020). Dense Passage Retrieval for Open-Domain Question Answering. In \textit{Proceedings of EMNLP 2020} (pp. 6769--6781). \url{https://arxiv.org/abs/2004.04906}
+    \bibitem{khosla2020supcon} Khosla, P., Teterwak, P., Wang, C., Sarna, A., Tian, Y., Isola, P., Maschinot, A., Liu, C., \& Krishnan, D. (2020). Supervised Contrastive Learning. In \textit{Advances in Neural Information Processing Systems}, 33. \url{https://arxiv.org/abs/2004.11362}
+    \bibitem{kozareva2015everyone} Kozareva, Z. (2015). Everyone likes shopping! Multi-class product categorization for e-commerce. In \textit{Proceedings of the 2015 conference of the North American chapter of the association for computational linguistics: Human language technologies} (pp. 1329-1333). \url{https://aclanthology.org/N15-1147/}
+    \bibitem{liu2017xmlcnn} Liu, J., Chang, W.-C., Wu, Y., \& Yang, Y. (2017). Deep Learning for Extreme Multi-label Text Classification. In \textit{Proceedings of SIGIR 2017} (pp. 115--124). \url{https://doi.org/10.1145/3077136.3080834}
+    \bibitem{malkov2020hnsw} Malkov, Y. A., \& Yashunin, D. A. (2020). Efficient and Robust Approximate Nearest Neighbor Search Using Hierarchical Navigable Small World Graphs. \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 42(4), 824--836. \url{https://arxiv.org/abs/1603.09320}
+    \bibitem{mcinnes2018umap} McInnes, L., Healy, J., \& Melville, J. (2018). UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction. \textit{arXiv preprint arXiv:1802.03426}. \url{https://arxiv.org/abs/1802.03426}
+    \bibitem{meng2022supergen} Meng, Y., Huang, J., Zhang, Y., \& Han, J. (2022). Generating Training Data with Language Models: Towards Zero-Shot Language Understanding. \textit{arXiv preprint arXiv:2202.04538}. \url{https://arxiv.org/abs/2202.04538}
+    \bibitem{mtebLeaderboard} Massive Text Embedding Benchmark. (2026). \textit{MTEB Leaderboard}. Hugging Face Spaces. \url{https://huggingface.co/spaces/mteb/leaderboard}
+    \bibitem{muennighoff2023mteb} Muennighoff, N., Tazi, N., Magne, L., \& Reimers, N. (2023). MTEB: Massive Text Embedding Benchmark. In \textit{Proceedings of EACL 2023}. \url{https://arxiv.org/abs/2210.07316}
+    \bibitem{mlx2023} Apple Machine Learning Research. (2023). \textit{MLX: An array framework for Apple silicon}. \url{https://github.com/ml-explore/mlx}
+    \bibitem{plaud2024revisiting} Plaud, R., Labeau, M., Saillenfest, A., \& Bonald, T. (2024). Revisiting Hierarchical Text Classification: Inference and Metrics. \textit{arXiv preprint arXiv:2410.01305}. \url{https://arxiv.org/abs/2410.01305}
+    \bibitem{reimers2019sentence} Reimers, N., \& Gurevych, I. (2019). Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks. In \textit{Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing} (EMNLP-IJCNLP) (pp. 3982-3992). \url{https://arxiv.org/abs/1908.10084}
+    \bibitem{rousseeuw1987silhouettes} Rousseeuw, P. J. (1987). Silhouettes: A graphical aid to the interpretation and validation of cluster analysis. \textit{Journal of Computational and Applied Mathematics}, 20, 53--65. \url{https://doi.org/10.1016/0377-0427(87)90125-7}
+    \bibitem{salton1988term} Salton, G., \& Buckley, C. (1988). Term-weighting approaches in automatic text retrieval. \textit{Information processing \& management}, 24(5), 513-523. \url{https://doi.org/10.1016/0306-4573(88)90021-0}
+    \bibitem{schroff2015facenet} Schroff, F., Kalenichenko, D., \& Philbin, J. (2015). Facenet: A unified embedding for face recognition and clustering. In \textit{Proceedings of the IEEE conference on computer vision and pattern recognition} (pp. 815-823). \url{https://arxiv.org/abs/1503.03832}
+    \bibitem{vaswani2017} Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., ... \& Polosukhin, I. (2017). Attention is all you need. \textit{Advances in neural information processing systems}, 30. \url{https://arxiv.org/abs/1706.03762}
+\end{thebibliography}
+
+% =======================
+% Annexes
+% =======================
+\appendix
+\chapter{Annexes}
+\label{chap:annexes}
+
+
+\section{Compléments Mathématiques de la Revue de Littérature}
+\label{sec:literature-details-annex}
+
+\noindent\hyperref[chap:literature-review]{Retour vers la revue de littérature.}
+
+Cette annexe regroupe les formules retirées du corps principal pour alléger la lecture. Pour TF-IDF, le poids d'un terme $t$ dans un document $d$ du corpus $D$ est :
+\begin{equation}
+    \text{TF-IDF}(t,d,D)=\frac{f_{t,d}}{\sum_{t'\in d}f_{t',d}}\log\left(\frac{|D|}{|\{d\in D:t\in d\}|}\right).
+\end{equation}
+L'attention Transformer s'écrit :
+\begin{equation}
+    \operatorname{Attention}(Q,K,V)=\operatorname{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V.
+\end{equation}
+La Triplet Loss utilisée en metric learning impose qu'une ancre soit plus proche de son positif que de son négatif :
+\begin{equation}
+    \mathcal{L}_{\text{triplet}}(a,p,n)=\max\left(d(f(a),f(p))-d(f(a),f(n))+\alpha,0\right).
+\end{equation}
+Pour deux nœuds $u$ et $v$ d'une taxonomie, la distance dans l'arbre est :
+\begin{equation}
+    d_T(u,v)=\operatorname{depth}(u)+\operatorname{depth}(v)-2\operatorname{depth}(\operatorname{LCA}(u,v)).
+\end{equation}
+Enfin, le coefficient de silhouette d'un produit $i$ est :
+\begin{equation}
+    s(i)=\frac{b(i)-a(i)}{\max(a(i),b(i))},
+\end{equation}
+où $a(i)$ est la distance moyenne de $i$ aux points de son cluster et $b(i)$ sa distance moyenne au cluster voisin le plus proche.
+
+\section{Statistiques Descriptives Détaillées}
+\label{sec:data-detailed-annex}
+
+\noindent\hyperref[chap:descriptive-statistics]{Retour vers les statistiques descriptives.}
+
+La distribution des langues est maintenant présentée directement dans le \hyperref[chap:descriptive-statistics]{chapitre 3}, car elle justifie le choix d'embedding models anglais compacts.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{figures/dataset_l1_distribution.pdf}
+    \caption{Distribution des produits annotés au Niveau 1.}
+    \label{fig:distL1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/dataset_l1_median_price.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/taxonomy_depth_distribution.pdf}
+    \caption{Prix médian par catégorie L1, à gauche, et distribution de profondeur de la taxonomie, à droite.}
+    \label{fig:data-price-taxonomy-depth-annex}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/taxonomy_l1_branch_sizes.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/taxonomy_l1_l2_tree.pdf}
+    \caption{Tailles des branches L1 et visualisation partielle de l'arbre L1--L2.}
+    \label{fig:data-taxonomy-tree-annex}
+\end{figure}
+
+\section{Figures d'Intuition pour l'Enrichissement des Catégories}
+\label{sec:category-enrichment-annex}
+
+\noindent\hyperref[chap:category-enrichment]{Retour vers le chapitre d'enrichissement des catégories.}
+
+Les figures principales d'intuition géométrique ont été replacées dans le \hyperref[chap:category-enrichment]{chapitre 4}, car elles sont nécessaires pour comprendre la méthode d'enrichissement. Cette annexe conserve uniquement le lien de retour.
+
+\section{Résultats Détaillés du Fine-Tuning L1}
+\label{sec:l1-detailed-annex}
+
+\noindent\hyperref[chap:l1-supervised]{Retour vers le chapitre de modélisation supervisée L1.}
+
+\begin{table}[H]
+    \centering
+    \caption{Comparaison de modèles d'embeddings compacts dans le snapshot MTEB utilisé}
+    \label{tab:mteb-compact-embedders}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lrrrrr}
+        \toprule
+        \textbf{Modèle} & \textbf{Rang Borda} & \textbf{Param. totaux} & \textbf{Moy. tâche} & \textbf{Classif.} & \textbf{Retrieval} \\
+        \midrule
+        \texttt{GIST-small-Embedding-v0} & 58 & 33M & 64{,}76 & 78{,}15 & 52{,}00 \\
+        \texttt{mini-gte} & 64 & 66M & 65{,}06 & 79{,}95 & 53{,}23 \\
+        \texttt{BAAI/bge-small-en-v1.5} & 74 & 33M & 64{,}30 & 76{,}56 & 53{,}86 \\
+        \texttt{gte-small} & 80 & 33M & 63{,}22 & 74{,}82 & 50{,}26 \\
+        \texttt{e5-small-v2} & 118 & 33M & 61{,}32 & 74{,}58 & 48{,}46 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.82\textwidth]{figures/l1_triplet_loss_alpha05.pdf}
+    \caption{Évolution de la training loss lors du fine-tuning supervisé du Niveau 1.}
+    \label{fig:l1-triplet-loss}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/l1_category_accuracy.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/l1_category_accuracy_balanced_sampling.pdf}
+    \caption{Accuracy top-1 par catégorie sans sampling équilibré, à gauche, et avec balanced sampling uniforme, à droite.}
+    \label{fig:l1-accuracy-baseline-balanced-annex}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/l1_embedding_projection_umap.pdf}
+    \caption{Projection UMAP des embeddings produits après fine-tuning supervisé du Niveau 1.}
+    \label{fig:l1-embedding-umap}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/l1_confusion_matrix_normalized.pdf}
+    \caption{Confusion matrix normalisée par catégorie vraie pour le modèle Niveau 1 retenu.}
+    \label{fig:l1-confusion-matrix-normalized}
+\end{figure}
+
+
+\section{Audit NLP Complet L2--L7}
+\label{sec:l2-l7-nlp-audit-annex}
+
+\noindent\hyperref[sec:l2-l7-pipeline-agreement]{Retour vers les résultats synthétiques L2--L7.}
+
+\begin{table}[H]
+    \centering
+    \caption{Audit NLP complet avec bi-encoder sur 128\,253 produits et 641\,265 paires.}
+    \label{tab:l2-l7-full-biencoder-audit-annex}
+    \scriptsize
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lrrrrrr}
+        \toprule
+        \textbf{Pipeline} & \textbf{Score Qwen} & \textbf{Win Qwen} & \textbf{Rang Qwen} & \textbf{Score Jasper} & \textbf{Win Jasper} & \textbf{Rang Jasper} \\
+        \midrule
+        Greedy & 0{,}260 & 29{,}5\,\% & 2{,}50 & 0{,}262 & 31{,}9\,\% & 2{,}39 \\
+        Beam & 0{,}273 & 10{,}4\,\% & 2{,}91 & 0{,}275 & 9{,}8\,\% & 2{,}86 \\
+        Beam + reranker & 0{,}272 & 18{,}4\,\% & 3{,}02 & 0{,}270 & 17{,}2\,\% & 3{,}13 \\
+        Clustering & 0{,}227 & 21{,}6\,\% & 3{,}63 & 0{,}224 & 21{,}8\,\% & 3{,}64 \\
+        Global path & 0{,}288 & 20{,}1\,\% & 2{,}94 & 0{,}293 & 19{,}3\,\% & 2{,}97 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Audit NLP complet avec cross-encoder sur 128\,253 produits et 641\,265 paires.}
+    \label{tab:l2-l7-full-crossencoder-audit-annex}
+    \scriptsize
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lrrrrrr}
+        \toprule
+        \textbf{Pipeline} & \textbf{Score Qwen} & \textbf{Win Qwen} & \textbf{Rang Qwen} & \textbf{Score Jasper} & \textbf{Win Jasper} & \textbf{Rang Jasper} \\
+        \midrule
+        Greedy & -4{,}724 & 17{,}0\,\% & 2{,}92 & -4{,}654 & 18{,}3\,\% & 2{,}81 \\
+        Beam & -4{,}618 & 7{,}9\,\% & 3{,}31 & -4{,}561 & 7{,}8\,\% & 3{,}25 \\
+        Beam + reranker & -4{,}248 & 37{,}5\,\% & 2{,}15 & -4{,}221 & 39{,}4\,\% & 2{,}14 \\
+        Clustering & -4{,}882 & 21{,}7\,\% & 3{,}53 & -4{,}885 & 20{,}2\,\% & 3{,}63 \\
+        Global path & -4{,}400 & 15{,}9\,\% & 3{,}09 & -4{,}382 & 14{,}3\,\% & 3{,}17 \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{Coût de l'audit NLP complet sur Kaggle.}
+    \label{tab:l2-l7-full-nlp-audit-cost-annex}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{llrrrrr}
+        \toprule
+        \textbf{Embedder évalué} & \textbf{Scorer} & \textbf{Produits} & \textbf{Paires} & \textbf{Temps} & \textbf{Débit} & \textbf{VRAM réservée} \\
+        \midrule
+        Qwen3 & Bi-encoder & 128\,253 & 641\,265 & 3{,}7 min & 3\,210 paires/s & 1{,}84 GB \\
+        Qwen3 & Cross-encoder & 128\,253 & 641\,265 & 24{,}5 min & 437 paires/s & 2{,}69 GB \\
+        Jasper & Bi-encoder & 128\,253 & 641\,265 & 3{,}8 min & 3\,183 paires/s & 1{,}84 GB \\
+        Jasper & Cross-encoder & 128\,253 & 641\,265 & 24{,}4 min & 440 paires/s & 2{,}39 GB \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_win_rates.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_mean_scores.pdf}
+    \caption{Audit NLP complet : win rates et scores moyens par pipeline.}
+    \label{fig:l2-l7-full-nlp-audit-annex}
+\end{figure}
+
+\section{Comparaison détaillée des stratégies de sampling L1}
+\label{sec:l1-sampling-annex}
+
+\noindent\hyperref[sec:l1-sampling]{Retour vers la section sur la correction du déséquilibre par sampling.}
+
+La figure \ref{fig:l1-category-accuracy-sampling-comparison} présente le détail par catégorie des cinq stratégies de sampling testées pour le fine-tuning du Niveau 1. Elle est placée en annexe et affichée en grand format afin de conserver la lisibilité des noms de catégories et des valeurs d'accuracy.
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=0.98\textwidth,height=0.78\textheight,keepaspectratio]{figures/l1_category_accuracy_sampling_comparison.pdf}
+    \caption{Comparaison des accuracies top-1 par catégorie pour les cinq stratégies de sampling.}
+    \label{fig:l1-category-accuracy-sampling-comparison}
+\end{figure}
+
+\section{Projection UMAP et comparaison PCA des Embeddings de Niveau 1}
+\label{sec:umap-pca-annex}
+
+\noindent\hyperref[chap:l1-supervised]{Retour vers le chapitre de modélisation supervisée L1.}
+
+UMAP construit un graphe de voisinage local dans l'espace original, puis optimise une représentation de faible dimension qui conserve au mieux ces voisinages. Ce choix est cohérent avec l'intuition développée dans le rapport : dans l'espace d'embeddings, les catégories ne forment pas nécessairement des nuages linéaires, mais plutôt des régions ou manifolds sémantiques locaux. UMAP est donc plus adapté qu'une projection purement linéaire lorsque la structure pertinente est locale et non linéaire.
+
+La projection UMAP est uniquement utilisée comme outil d'inspection qualitative de l'espace latent. Les distances exactes observées en deux dimensions ne doivent pas être interprétées comme des distances de classification, car elles résultent d'une projection compressive depuis un espace d'embeddings de dimension beaucoup plus élevée.
+
+La figure \ref{fig:l1-embedding-pca-annex} présente la même matrice d'embeddings que la projection UMAP du \hyperref[chap:l1-supervised]{chapitre principal}, mais projetée avec PCA. Cette visualisation est conservée comme point de comparaison méthodologique : PCA cherche les directions linéaires de variance maximale, alors que UMAP cherche à préserver les voisinages locaux. Dans notre cas, la PCA donne une séparation moins exploitable visuellement, ce qui confirme que la structure apprise par le fine-tuning est mieux décrite par une géométrie locale non linéaire que par deux axes linéaires globaux.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/l1_embedding_projection_pca.pdf}
+    \caption{Projection PCA des embeddings produits après fine-tuning supervisé du Niveau 1.}
+    \label{fig:l1-embedding-pca-annex}
+\end{figure}
+
+\section{V de Cramér pour l'Association entre Pipelines}
+\label{sec:cramers-v-annex}
+
+\noindent\hyperref[sec:l2-l7-unsupervised-metrics]{Retour vers la méthodologie des metrics non supervisées.}
+
+Dans la comparaison des pipelines L2--L7, chaque méthode produit un label discret : un chemin taxonomique complet, ou un label à un niveau donné. Une corrélation de Pearson n'est pas adaptée à ce cas, car elle suppose des variables numériques ordonnées. Or deux chemins taxonomiques sont des catégories nominales : leur identifiant numérique éventuel n'a pas de sens métrique.
+
+Le V de Cramér mesure l'intensité de l'association entre deux variables catégorielles. Supposons que deux pipelines $A$ et $B$ produisent respectivement des labels dans $\{a_1,\ldots,a_r\}$ et $\{b_1,\ldots,b_c\}$. On construit la table de contingence :
+\begin{equation}
+    N =
+    \left(n_{ij}\right)_{1 \leq i \leq r,\ 1 \leq j \leq c},
+    \qquad
+    n_{ij}
+    =
+    \#\left\{x : A(x)=a_i,\ B(x)=b_j\right\}.
+\end{equation}
+On note $n=\sum_{i=1}^{r}\sum_{j=1}^{c} n_{ij}$ le nombre total de produits comparés, $n_{i\cdot}=\sum_{j=1}^{c}n_{ij}$ les marges lignes et $n_{\cdot j}=\sum_{i=1}^{r}n_{ij}$ les marges colonnes. Sous l'hypothèse d'indépendance entre les deux pipelines, l'effectif attendu dans la cellule $(i,j)$ est :
+\begin{equation}
+    e_{ij}
+    =
+    \frac{n_{i\cdot}n_{\cdot j}}{n}.
+\end{equation}
+La statistique du chi-deux associée à la table est alors :
+\begin{equation}
+    \chi^2
+    =
+    \sum_{i=1}^{r}\sum_{j=1}^{c}
+    \frac{(n_{ij}-e_{ij})^2}{e_{ij}}.
+\end{equation}
+Le V de Cramér normalise cette quantité afin d'obtenir une mesure comprise entre 0 et 1 :
+\begin{equation}
+    V
+    =
+    \sqrt{
+    \frac{\chi^2}
+    {n \cdot \min(r-1,c-1)}
+    }.
+\end{equation}
+
+L'interprétation est la suivante. Une valeur proche de 0 indique que les prédictions des deux pipelines sont faiblement associées : connaître le label prédit par le premier pipeline informe peu sur le label prédit par le second. Une valeur proche de 1 indique une forte association catégorielle : les labels produits par un pipeline contraignent fortement ceux de l'autre. Cette notion est différente de l'accord exact. Deux pipelines peuvent avoir un accord exact faible mais un V de Cramér élevé si leurs prédictions sont liées par une correspondance régulière entre catégories. Par exemple, un pipeline peut systématiquement choisir une catégorie plus générale tandis qu'un autre choisit une sous-branche proche ; les labels ne sont pas identiques, mais la relation statistique reste forte.
+
+Dans notre contexte non supervisé, cette propriété est utile pour distinguer deux situations. Si l'accord exact et le V de Cramér sont élevés, les pipelines produisent presque les mêmes chemins. Si l'accord exact est faible mais le V de Cramér reste élevé, les pipelines divergent localement mais capturent une structure catégorielle commune. Si les deux sont faibles, les méthodes produisent des hypothèses réellement différentes, ce qui signale des produits ou des branches à auditer en priorité.
+
+Le V de Cramér présente donc trois avantages pour notre comparaison. Premièrement, il respecte la nature nominale des prédictions taxonomiques. Deuxièmement, il est normalisé entre 0 et 1, ce qui facilite la comparaison entre paires de pipelines. Troisièmement, il mesure une association globale entre distributions de labels, pas seulement une égalité stricte produit par produit.
+
+Il faut toutefois rappeler ses limites. Le V de Cramér n'est pas une mesure d'accuracy : sans ground truth L2--L7, une forte association entre deux pipelines ne prouve pas que leurs prédictions sont correctes. Il est aussi sensible aux tables très creuses, fréquentes lorsque le nombre de chemins distincts est élevé. Pour cette raison, nous l'utilisons conjointement avec l'accord exact, l'accord niveau par niveau, les marges de confiance, la diversité des chemins et les scores sémantiques externes.
+
+\section{Tableau Global des Metrics L2--L7 Non Supervisées}
+\label{sec:l2-l7-metrics-annex}
+
+\noindent\hyperref[sec:l2-l7-unsupervised-metrics]{Retour vers la méthodologie des metrics non supervisées.}
+
+Le tableau \ref{tab:l2-l7-global-metrics-annex} synthétise les trois familles de metrics utilisées pour comparer les pipelines L2--L7. Ces indicateurs ne remplacent pas une accuracy supervisée ; ils servent à comparer le coût, la stabilité et la cohérence relative des méthodes en l'absence de ground truth.
+
+\begin{table}[H]
+    \centering
+    \caption{Synthèse des metrics non supervisées utilisées pour comparer les pipelines L2--L7.}
+    \label{tab:l2-l7-global-metrics-annex}
+    \scriptsize
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{p{3.0cm}p{3.2cm}p{5.0cm}p{5.4cm}}
+        \toprule
+        \textbf{Famille} & \textbf{Metric} & \textbf{Interprétation} & \textbf{Lecture dans nos expériences} \\
+        \midrule
+        Coût d'inference & Temps moyen par produit & Mesure la latence opérationnelle du pipeline une fois les embeddings disponibles. Plus la valeur est faible, plus la méthode est compatible avec un passage à l'échelle. & Le clustering et le greedy sont les plus rapides. Le beam augmente le temps car il conserve plusieurs chemins. Le beam + reranker est le plus coûteux et doit être réservé aux cas incertains. \\
+        Coût d'inference & Millions d'opérations par produit & Approxime le nombre de produits scalaires entre embeddings. Cette metric dépend directement du nombre de candidats comparés et de la dimension de l'encoder. & Qwen3 est avantagé car sa dimension est 1024, contre 2048 pour Jasper. À stratégie identique, Jasper double approximativement le coût vectoriel. \\
+        Coût d'inference & Mémoire chargée & Mesure la taille des matrices nécessaires en inference : produits, prototypes ou chemins globaux. & Qwen3 occupe environ 651 MB pour les embeddings partagés, contre 1{,}3 GB pour Jasper. Qwen3 est donc plus favorable si la contrainte principale est la mémoire d'inference. \\
+        Confiance interne & Marge top-1/top-2 & Mesure l'écart entre le meilleur candidat et le second. Une marge faible indique une décision instable. & Le beam explore davantage mais conserve souvent des marges faibles, surtout avec Qwen3. Le clustering a une marge médiane plus élevée, car l'affectation centroïde--catégorie est parfois plus nette. \\
+        Confiance interne & Profondeur moyenne prédite & Indique jusqu'où la méthode descend dans la taxonomie. Une profondeur élevée n'est positive que si elle reste associée à une confiance suffisante. & Le retrieval de chemins globaux descend généralement plus profondément. Le clustering est plus prudent et tend à produire des chemins légèrement moins profonds. \\
+        Confiance interne & Diversité et concentration des chemins & Combine le nombre de chemins distincts, l'entropie et la part du chemin le plus fréquent. Une forte concentration peut signaler un biais vers des chemins génériques. & Qwen3 produit des chemins plus diversifiés. Jasper donne des scores cosinus plus forts mais concentre davantage les prédictions sur quelques chemins, sauf avec reranker ou clustering. \\
+        Comparaison entre pipelines & Accord exact sur le chemin & Mesure la proportion de produits pour lesquels deux pipelines prédisent exactement le même chemin. & Greedy et beam sont les plus proches. Le clustering est volontairement plus différent, car il exploite la structure collective des produits plutôt qu'une décision locale. \\
+        Comparaison entre pipelines & Accord niveau par niveau L2--L7 & Localise le premier niveau où les pipelines divergent. Cette metric est plus informative qu'un accord complet lorsque les chemins sont profonds. & Les pipelines peuvent être cohérents en L2 mais diverger ensuite. Cela montre que la difficulté principale se situe souvent dans les niveaux profonds. \\
+        Comparaison entre pipelines & V de Cramér & Mesure l'association statistique entre deux distributions de labels discrets, même lorsque les labels ne sont pas strictement identiques. & Un V élevé avec un accord faible signifie que les pipelines suivent une structure catégorielle commune mais choisissent des chemins différents. Cette situation identifie des branches à auditer plutôt qu'un échec direct. \\
+        Comparaison entre pipelines & Score NLP externe et win rate & Compare les chemins concurrents d'un même produit avec un modèle de ranking ou de similarité sémantique. & Le retrieval de chemins globaux obtient le meilleur score moyen sur l'audit Qwen3, tandis que le greedy reste compétitif en win rate. Cela suggère une possible règle hybride selon la branche L1 et la marge. \\
+        \bottomrule
+    \end{tabular}
+    }
+\end{table}
+
+\section{Matrices d'Accord L2--L7 et Vitesse de Divergence}
+\label{sec:l2-l7-family3-matrices-annex}
+
+\noindent\hyperref[sec:l2-l7-pipeline-agreement]{Retour vers la comparaison des pipelines entre eux.}
+
+Cette annexe complète la comparaison famille 3 en visualisant les matrices d'accord exact niveau par niveau. Pour un niveau $\ell \in \{2,\ldots,7\}$ et deux pipelines $A$ et $B$, l'accord reporté dans la matrice est :
+\begin{equation}
+    \operatorname{Acc}_{\ell}(A,B)
+    =
+    \frac{1}{n_{\ell}}
+    \sum_{i=1}^{n_{\ell}}
+    \mathbf{1}\left[
+    \hat{y}^{A}_{i,\ell}
+    =
+    \hat{y}^{B}_{i,\ell}
+    \right],
+\end{equation}
+où $n_{\ell}$ désigne le nombre de produits pour lesquels au moins l'un des deux pipelines prédit un label au niveau $\ell$. Cette définition permet de comparer les pipelines uniquement sur les niveaux effectivement atteints.
+
+La divergence associée est définie par :
+\begin{equation}
+    \operatorname{Div}_{\ell}(A,B)
+    =
+    1
+    -
+    \operatorname{Acc}_{\ell}(A,B).
+\end{equation}
+Elle mesure donc la vitesse à laquelle deux pipelines cessent de prédire les mêmes catégories quand on descend dans la taxonomie. Une divergence faible en L2 mais forte en L4 signifie que les méthodes s'accordent sur la grande famille de produits, mais choisissent rapidement des sous-branches différentes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.98\textwidth]{figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf}
+    \caption{Vitesse de divergence entre pipelines selon la profondeur taxonomique. Les courbes grises correspondent aux paires de pipelines ; la courbe bleue indique la divergence moyenne.}
+    \label{fig:l2-l7-family3-divergence-depth}
+\end{figure}
+
+La figure \ref{fig:l2-l7-family3-divergence-depth} montre que la divergence augmente très rapidement entre L2 et L4. Cette observation confirme que les premières décisions hiérarchiques restent relativement partagées entre certaines méthodes, en particulier greedy et beam, mais que les chemins se différencient fortement dès que la taxonomie devient plus fine. Les niveaux L6--L7 doivent être interprétés avec prudence : peu de produits atteignent ces profondeurs, ce qui rend les accords plus sensibles à la taille des sous-échantillons.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_qwen_level_2_agreement_heatmap.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_jasper_level_2_agreement_heatmap.pdf}
+    \caption{Matrices d'accord exact au Niveau 2 pour Qwen3, à gauche, et Jasper, à droite.}
+    \label{fig:l2-l7-family3-level2-matrix}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_qwen_level_3_agreement_heatmap.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_jasper_level_3_agreement_heatmap.pdf}
+    \caption{Matrices d'accord exact au Niveau 3 pour Qwen3, à gauche, et Jasper, à droite.}
+    \label{fig:l2-l7-family3-level3-matrix}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_qwen_level_4_agreement_heatmap.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_jasper_level_4_agreement_heatmap.pdf}
+    \caption{Matrices d'accord exact au Niveau 4 pour Qwen3, à gauche, et Jasper, à droite.}
+    \label{fig:l2-l7-family3-level4-matrix}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_qwen_level_5_agreement_heatmap.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_jasper_level_5_agreement_heatmap.pdf}
+    \caption{Matrices d'accord exact au Niveau 5 pour Qwen3, à gauche, et Jasper, à droite.}
+    \label{fig:l2-l7-family3-level5-matrix}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_qwen_level_6_agreement_heatmap.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_jasper_level_6_agreement_heatmap.pdf}
+    \caption{Matrices d'accord exact au Niveau 6 pour Qwen3, à gauche, et Jasper, à droite.}
+    \label{fig:l2-l7-family3-level6-matrix}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_qwen_level_7_agreement_heatmap.pdf}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figures/l2_l7_family3_annex/family3_jasper_level_7_agreement_heatmap.pdf}
+    \caption{Matrices d'accord exact au Niveau 7 pour Qwen3, à gauche, et Jasper, à droite.}
+    \label{fig:l2-l7-family3-level7-matrix}
+\end{figure}
+
+Ces matrices permettent de localiser précisément le niveau où les pipelines divergent. Greedy et beam restent les plus proches sur les premiers niveaux, ce qui confirme que le beam search se comporte comme une extension prudente de la descente greedy. Le global path conserve une cohérence partielle avec le beam, surtout dans les premiers niveaux, mais diverge davantage à mesure que le chemin devient spécifique. Le clustering est systématiquement le plus éloigné des autres pipelines : cette différence provient de sa logique collective, qui cherche d'abord des groupes de produits avant d'associer ces groupes aux catégories.
+
+\section{Beam Search et Reranking pour le Décodage Hiérarchique}
+\label{sec:beam-reranker-annex}
+
+\noindent\hyperref[sec:l2-l7-pipeline-local-decoding]{Retour vers le pipeline de décodage hiérarchique local.}
+
+Cette annexe détaille les deux variantes avancées du pipeline de décodage hiérarchique local : le beam search et le beam search suivi d'un reranker. Ces deux méthodes répondent au même problème : dans une taxonomie profonde, une décision locale incorrecte au Niveau 2 ou au Niveau 3 contraint tous les niveaux suivants. Une descente greedy est donc rapide, mais fragile.
+
+\subsection*{Beam search}
+
+Soit $x$ un produit, $\hat{y}_1$ le Niveau 1 prédit par le modèle fine-tuné, et $u$ un nœud courant de la taxonomie. Pour chaque enfant $c \in \mathrm{Child}(u)$, le score local est :
+\begin{equation}
+    s(x,c)
+    =
+    \max_{p \in \mathcal{P}_c}
+    \cos\left(g(x),g(p)\right),
+\end{equation}
+où $g$ est l'encoder L2--L7 et $\mathcal{P}_c$ l'ensemble des prototypes enrichis de la catégorie $c$.
+
+Un chemin partiel $h=(\hat{y}_1,c_2,\ldots,c_\ell)$ reçoit un score cumulé. Dans notre cas, on utilise une agrégation additive des scores locaux :
+\begin{equation}
+    S(h \mid x)
+    =
+    \sum_{t=2}^{\ell} s(x,c_t).
+\end{equation}
+Une variante possible consiste à normaliser par la longueur du chemin pour éviter de favoriser mécaniquement les chemins profonds :
+\begin{equation}
+    \bar{S}(h \mid x)
+    =
+    \frac{1}{\ell-1}
+    \sum_{t=2}^{\ell} s(x,c_t).
+\end{equation}
+
+L'algorithme conserve à chaque profondeur les $B$ meilleurs chemins partiels. Si $\mathcal{B}_\ell$ désigne le beam à la profondeur $\ell$, l'étape suivante est :
+\begin{equation}
+    \mathcal{B}_{\ell+1}
+    =
+    \operatorname{TopB}
+    \left\{
+    h \oplus c
+    \;:\;
+    h \in \mathcal{B}_\ell,\ 
+    c \in \mathrm{Child}(\mathrm{last}(h))
+    \right\}.
+\end{equation}
+Ici, $h \oplus c$ désigne le chemin obtenu en ajoutant l'enfant $c$ au chemin partiel $h$.
+
+Le beam search est donc un compromis entre greedy et recherche exhaustive. Avec $B=1$, il devient exactement greedy. Lorsque $B$ augmente, il explore plus de branches et peut corriger une décision locale ambiguë en conservant plusieurs hypothèses jusqu'aux niveaux suivants. Son coût augmente cependant avec la largeur du beam et le nombre moyen d'enfants dans la taxonomie. Si $\bar{k}$ est le nombre moyen d'enfants testés par nœud et $D$ la profondeur maximale explorée, le coût est de l'ordre de :
+\begin{equation}
+    O(B \times \bar{k} \times D)
+\end{equation}
+comparaisons catégorie--produit par produit, contre $O(\bar{k} \times D)$ pour le greedy.
+
+Dans nos expériences, le beam améliore légèrement la profondeur moyenne prédite par rapport au greedy, mais il conserve souvent une marge top-1/top-2 faible. Cette observation signifie que plusieurs chemins restent plausibles dans l'espace d'embeddings, ce qui justifie l'ajout d'un reranker pour les produits les plus incertains.
+
+\subsection*{Beam search + reranker}
+
+Le reranking intervient après le beam search. Au lieu de choisir directement le chemin ayant le meilleur score cumulé de similarités locales, on conserve les $K$ meilleurs chemins candidats :
+\begin{equation}
+    \mathcal{H}_K(x)
+    =
+    \{h_1,\ldots,h_K\}.
+\end{equation}
+Chaque chemin $h_k$ est transformé en texte, par exemple en concaténant les noms des catégories, le chemin taxonomique et les éléments d'enrichissement associés. Le reranker reçoit alors des couples :
+\begin{equation}
+    \left(\text{texte produit } x,\ \text{texte du chemin } h_k\right).
+\end{equation}
+
+Un modèle de ranking ou un cross-encoder produit un score global :
+\begin{equation}
+    r(x,h_k)
+    =
+    R\left(x,h_k\right).
+\end{equation}
+La prédiction finale devient :
+\begin{equation}
+    \hat{h}
+    =
+    \arg\max_{h_k \in \mathcal{H}_K(x)}
+    r(x,h_k).
+\end{equation}
+
+L'intérêt du reranker est qu'il évalue le chemin comme une hypothèse globale. Le beam search accumule des décisions locales : un enfant peut être choisi parce qu'il est légèrement meilleur à un niveau donné, même si le chemin complet devient moins cohérent avec le produit. Le reranker corrige ce biais en comparant directement le texte du produit avec la description complète du chemin candidat.
+
+Cette approche a trois avantages. Premièrement, elle réduit le risque de propagation d'erreur, car plusieurs chemins restent disponibles jusqu'à la décision finale. Deuxièmement, elle permet d'utiliser un modèle plus coûteux uniquement sur un petit ensemble de candidats, et non sur toute la taxonomie. Troisièmement, elle produit un score externe utile pour l'audit : si le reranker hésite entre plusieurs chemins, le produit peut être marqué comme incertain.
+
+Sa limite principale est le coût. Si $K$ chemins sont rerankés pour chaque produit, il faut exécuter $K$ évaluations produit--chemin supplémentaires. Le coût devient donc :
+\begin{equation}
+    C_{\text{beam+rerank}}
+    =
+    C_{\text{beam}}
+    +
+    K \cdot C_{\text{reranker}}.
+\end{equation}
+Dans nos expériences avec Jasper, cette variante atteint 15{,}82 ms par produit, contre 2{,}84 ms pour le beam seul. Elle est donc trop coûteuse pour être appliquée systématiquement si la contrainte principale est la latence, mais elle est pertinente pour les produits à faible marge, les branches ambiguës ou les échantillons destinés à une validation humaine.
+
+Une stratégie opérationnelle naturelle est donc sélective : appliquer greedy ou beam comme méthode standard, puis déclencher le reranker uniquement lorsque la marge top-1/top-2 est inférieure à un seuil $\tau$ :
+\begin{equation}
+    \Delta(x)
+    =
+    S(h_1 \mid x) - S(h_2 \mid x)
+    <
+    \tau.
+\end{equation}
+Cette règle concentre le coût du reranking sur les produits pour lesquels la décision hiérarchique est réellement incertaine.
+
+\end{document}

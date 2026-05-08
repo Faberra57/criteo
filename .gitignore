@@ -6,3 +6,8 @@ modele_checkpoint/
 modele_catalogue_finetuned_final/
 checkpoints/
 tmpp0tohx6_.csv
+dataset
+legacy
+artifacts
+.env
+models

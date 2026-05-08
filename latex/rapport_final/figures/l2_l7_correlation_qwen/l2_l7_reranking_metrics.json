@@ -1,0 +1,38 @@
+{
+  "args": {
+    "preset": "qwen",
+    "pipeline": null,
+    "output_dir": "latex/rapport_final/figures/l2_l7_correlation_qwen",
+    "category_prototypes_path": "/Users/faberra/projet/Ecole/Critéo/dataset/shared_l1_l7_embeddings_Qwen3-Embedding-0.6B/category_prototypes.parquet",
+    "id_col": "hashed_external_id",
+    "text_col": "text",
+    "path_col": "predicted_taxonomy_path",
+    "key_path_col": "predicted_taxonomy_key_path",
+    "l1_col": "predicted_level_1_name",
+    "score_col": "predicted_path_score",
+    "depth_col": "resolved_depth",
+    "sample_size": 500,
+    "selection": "disagreements",
+    "random_seed": 42,
+    "skip_scorer": true,
+    "skip_cross_encoder": false,
+    "scorer": "bi-encoder",
+    "scorer_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "cross_encoder_model": null,
+    "device": null,
+    "batch_size": 32,
+    "max_prototypes_per_category": 6,
+    "min_products_per_l1": 25
+  },
+  "pipeline_paths": {
+    "greedy": "/Users/faberra/projet/Ecole/Critéo/data/qwen/pipeline1_hierarchical_predictions_greedy.csv",
+    "beam": "/Users/faberra/projet/Ecole/Critéo/data/qwen/pipeline1_hierarchical_predictions_beam.csv",
+    "clustering_l1_hungarian": "/Users/faberra/projet/Ecole/Critéo/data/qwen/pipeline2_hierarchical_clustering_predictions_l1routed_hungarian.csv",
+    "global_path": "/Users/faberra/projet/Ecole/Critéo/data/qwen/pipeline3_global_path_predictions.csv"
+  },
+  "n_pipelines": 4,
+  "n_products_selected": 500,
+  "n_pairs_scored": 0,
+  "elapsed_seconds": 31.61252074991353,
+  "output_dir": "latex/rapport_final/figures/l2_l7_correlation_qwen"
+}

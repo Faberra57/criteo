@@ -1,0 +1,49 @@
+{
+  "args": {
+    "preset": "jasper",
+    "pipeline": null,
+    "output_dir": null,
+    "id_col": "hashed_external_id",
+    "path_col": "predicted_taxonomy_path",
+    "level_prefix": "predicted_level_",
+    "level_suffix": "_name",
+    "min_level": 2,
+    "max_level": 7,
+    "selection": "all",
+    "sample_size": 0,
+    "random_seed": 42,
+    "no_plots": false
+  },
+  "pipeline_paths": {
+    "greedy": "/Users/faberra/projet/Ecole/Critéo/data/jasper/pipeline1_hierarchical_predictions_jasper_greedy.csv",
+    "beam": "/Users/faberra/projet/Ecole/Critéo/data/jasper/pipeline1_hierarchical_predictions_jasper_beam.csv",
+    "beam_reranker": "/Users/faberra/projet/Ecole/Critéo/data/jasper/pipeline1_hierarchical_predictions_beam-rerank_jasper.csv",
+    "clustering_l1_hungarian": "/Users/faberra/projet/Ecole/Critéo/data/jasper/pipeline2_hierarchical_clustering_predictions_jasper_l1routed_hungarian.csv",
+    "global_path": "/Users/faberra/projet/Ecole/Critéo/data/jasper/pipeline3_global_path_predictions_jasper.csv"
+  },
+  "pipelines": [
+    "greedy",
+    "beam",
+    "beam_reranker",
+    "clustering_l1_hungarian",
+    "global_path"
+  ],
+  "n_pipelines": 5,
+  "n_common_products_before_filter": 128253,
+  "n_products_selected": 128253,
+  "selection": "all",
+  "sample_size": 0,
+  "elapsed_seconds": 711.3649469169322,
+  "outputs": {
+    "pairwise_metrics": "/Users/faberra/projet/Ecole/Critéo/latex/rapport_final/figures/l2_l7_family3_jasper/family3_pairwise_metrics.csv",
+    "product_disagreement_summary": "/Users/faberra/projet/Ecole/Critéo/latex/rapport_final/figures/l2_l7_family3_jasper/family3_product_disagreement_summary.csv",
+    "global_summary": "/Users/faberra/projet/Ecole/Critéo/latex/rapport_final/figures/l2_l7_family3_jasper/family3_global_summary.csv",
+    "heatmaps": [
+      "/Users/faberra/projet/Ecole/Critéo/latex/rapport_final/figures/l2_l7_family3_jasper/family3_exact_path_agreement_heatmap.pdf",
+      "/Users/faberra/projet/Ecole/Critéo/latex/rapport_final/figures/l2_l7_family3_jasper/family3_path_cramers_v_heatmap.pdf",
+      "/Users/faberra/projet/Ecole/Critéo/latex/rapport_final/figures/l2_l7_family3_jasper/family3_level_2_agreement_heatmap.pdf",
+      "/Users/faberra/projet/Ecole/Critéo/latex/rapport_final/figures/l2_l7_family3_jasper/family3_level_3_agreement_heatmap.pdf",
+      "/Users/faberra/projet/Ecole/Critéo/latex/rapport_final/figures/l2_l7_family3_jasper/family3_level_4_agreement_heatmap.pdf"
+    ]
+  }
+}
