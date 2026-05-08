@@ -1,15 +1,17 @@
 Date_Debut,Date_Fin,Phase,Tâche,Responsable,Statut,Durée_Heures
+04/11/2025,13/02/2026,Phase 1,"Réunion avec Critéo n 1",Toute l'equipe,Terminé,1
 04/11/2025,07/11/2025,Phase 1 (Data),"Prise en main du catalogue Criteo (128k produits) et analyse exploratoire",Salah Eddine,Terminé,5
 10/11/2025,12/11/2025,Phase 1 (Data),"Parsing de la taxonomie Google et création du graphe orienté (NetworkX)",Thomas,Terminé,3
 13/11/2025,14/11/2025,Phase 1 (Data),"Preprocessing NLP (concaténation) et filtrage linguistique (détection EN)",Tao,Terminé,2
 17/11/2025,28/11/2025,Phase 1 (Vectorisation),"Encodage des 128k produits via SentenceTransformers (all-MiniLM-L6-v2)",Yohan,Terminé,2
+20/11/2025,13/02/2026,Phase 1,"Réunion avec Critéo n 2",Toute l'equipe,Terminé,1
 01/12/2025,05/12/2025,Phase 1 (Vectorisation),"Calcul des barycentres hiérarchiques pour les ancres de catégories Level 1",Thomas,Terminé,1
 08/12/2025,12/12/2025,Phase 1 (Similarité),"Calcul et optimisation de la matrice de similarité cosinus (Produits vs Ancres)",Tao,Terminé,1
 15/12/2025,19/12/2025,Phase 1 (OR-Tools),"Modélisation du réseau biparti Min-Cost Max-Flow (capacités et coûts via Top-K)",Salah Eddine,Terminé,1
 22/12/2025,02/01/2026,Pause,"Congés / Période de fin d'année",Toute l'équipe,Terminé,0
 05/01/2026,09/01/2026,Phase 1 (OR-Tools),"Exécution du solveur, gestion des contraintes de quotas et debugging",Yohan,Terminé,2
 12/01/2026,16/01/2026,Phase 1 (Bilan),"Analyse qualitative des assignations et limites de l'approche non-supervisée",Thomas & Tao,Terminé,1
-12/02/2026,13/02/2026,Transition (Pivot),"Réunion avec Critéo n 3",Salah Eddine & Thomas,Terminé,1
+12/02/2026,13/02/2026,Transition (Pivot),"Réunion avec Critéo n 3",Toute l'équipe,Terminé,1
 18/02/2026,19/02/2026,Transition (Pivot),"Réception du Ground Truth, analyse des labels réels et conception de la Phase 2",Toute l'équipe,Terminé,2
 20/02/2026,20/02/2026,Phase 2 (Data Prep),"Intégration du Ground Truth et nettoyage des textes (concaténation)",Salah Eddine,Terminé,1
 23/02/2026,23/02/2026,Phase 2 (Data Prep),"Analyse du déséquilibre des classes et stratégie d'échantillonnage",Tao,Terminé,1
@@ -29,4 +31,4 @@ Date_Debut,Date_Fin,Phase,Tâche,Responsable,Statut,Durée_Heures
 12/03/2026,12/03/2026,Industrialisation,"Définition du seuil de rejet et pipeline d'Active Learning",Salah Eddine,Terminé,1
 13/03/2026,13/03/2026,Perspectives,"Prototypage du Soft Hierarchical Decoding (Level 2)",Thomas,Terminé,0.5
 13/03/2026,13/03/2026,Perspectives,"Ébauche de l'algorithme Beam Search pour les Levels 3 et 4",Yohan,Terminé,0.5
-14/03/2026,14/03/2026,Restitution,"Rédaction de la synthèse LaTeX et push sur GitHub",Salah Eddine & Tao,Terminé,2
+14/03/2026,14/03/2026,Restitution,"Rédaction de la synthèse LaTeX et push sur GitHub",Salah Eddine & Tao,Terminé,1

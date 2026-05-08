@@ -11,3 +11,4 @@ legacy
 artifacts
 .env
 models
+*.csv
