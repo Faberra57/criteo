@@ -1,0 +1,9 @@
+revoir le script scripts/benchmark_final_l1_l7_pipelines.py pour que ca utilise pas les embeddings deja stocker 
+pour avoir un cout global réel puis mettre à jour la partie 7.2 avec les nouveaux chiffres
+
+refaire les annexes plus proprement
+
+faire un document pour explication du code
+
+mise en page a revoir taille des figures ect
+

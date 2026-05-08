@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.6.16)  8 MAY 2026 02:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.6.16)  8 MAY 2026 15:24
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -587,20 +587,20 @@ File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 
 [11]
 Chapitre 4.
+<figures/category_prototype_manifold_coverage.pdf, id=364, 811.86111pt x 415.18124pt>
+File: figures/category_prototype_manifold_coverage.pdf Graphic file (type pdf)
+<use figures/category_prototype_manifold_coverage.pdf>
+Package pdftex.def Info: figures/category_prototype_manifold_coverage.pdf  used on input line 381.
+(pdftex.def)             Requested size: 437.0374pt x 223.49767pt.
 
 
 [12
 
 ]
-<figures/category_prototype_manifold_coverage.pdf, id=372, 811.86111pt x 415.18124pt>
-File: figures/category_prototype_manifold_coverage.pdf Graphic file (type pdf)
-<use figures/category_prototype_manifold_coverage.pdf>
-Package pdftex.def Info: figures/category_prototype_manifold_coverage.pdf  used on input line 370.
-(pdftex.def)             Requested size: 437.0374pt x 223.49767pt.
 <figures/category_interlaced_manifolds_enrichment.pdf, id=374, 831.1412pt x 429.41843pt>
 File: figures/category_interlaced_manifolds_enrichment.pdf Graphic file (type pdf)
 <use figures/category_interlaced_manifolds_enrichment.pdf>
-Package pdftex.def Info: figures/category_interlaced_manifolds_enrichment.pdf  used on input line 381.
+Package pdftex.def Info: figures/category_interlaced_manifolds_enrichment.pdf  used on input line 392.
 (pdftex.def)             Requested size: 437.0374pt x 225.80188pt.
 
 
@@ -608,149 +608,135 @@ Package pdftex.def Info: figures/category_interlaced_manifolds_enrichment.pdf  u
 
 [14 <./figures/category_interlaced_manifolds_enrichment.pdf>]
 Chapitre 5.
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 433.
 
 
 [15
 
 ]
-<figures/l1_triplet_loss_alpha05.pdf, id=532, 570.03651pt x 337.29514pt>
+<figures/l1_triplet_loss_alpha05.pdf, id=533, 570.03651pt x 337.29514pt>
 File: figures/l1_triplet_loss_alpha05.pdf Graphic file (type pdf)
 <use figures/l1_triplet_loss_alpha05.pdf>
-Package pdftex.def Info: figures/l1_triplet_loss_alpha05.pdf  used on input line 455.
+Package pdftex.def Info: figures/l1_triplet_loss_alpha05.pdf  used on input line 466.
 (pdftex.def)             Requested size: 373.3035pt x 220.88617pt.
 
 
 [16 <./figures/l1_triplet_loss_alpha05.pdf>]
-<figures/l1_category_accuracy.pdf, id=584, 657.40608pt x 475.95943pt>
+<figures/l1_category_accuracy.pdf, id=585, 657.40608pt x 475.95943pt>
 File: figures/l1_category_accuracy.pdf Graphic file (type pdf)
 <use figures/l1_category_accuracy.pdf>
-Package pdftex.def Info: figures/l1_category_accuracy.pdf  used on input line 469.
+Package pdftex.def Info: figures/l1_category_accuracy.pdf  used on input line 480.
 (pdftex.def)             Requested size: 218.51521pt x 158.2073pt.
-<figures/l1_category_accuracy_balanced_sampling.pdf, id=585, 657.40608pt x 475.95943pt>
+<figures/l1_category_accuracy_balanced_sampling.pdf, id=586, 657.40608pt x 475.95943pt>
 File: figures/l1_category_accuracy_balanced_sampling.pdf Graphic file (type pdf)
 <use figures/l1_category_accuracy_balanced_sampling.pdf>
-Package pdftex.def Info: figures/l1_category_accuracy_balanced_sampling.pdf  used on input line 471.
+Package pdftex.def Info: figures/l1_category_accuracy_balanced_sampling.pdf  used on input line 482.
 (pdftex.def)             Requested size: 218.51521pt x 158.2073pt.
 
 
 [17 <./figures/l1_category_accuracy.pdf> <./figures/l1_category_accuracy_balanced_sampling.pdf>]
-<figures/l1_category_accuracy_sampling_comparison.pdf, id=691, 974.41544pt x 627.85187pt>
-File: figures/l1_category_accuracy_sampling_comparison.pdf Graphic file (type pdf)
-<use figures/l1_category_accuracy_sampling_comparison.pdf>
-Package pdftex.def Info: figures/l1_category_accuracy_sampling_comparison.pdf  used on input line 505.
-(pdftex.def)             Requested size: 446.13727pt x 287.46455pt.
 <figures/l1_embedding_projection_umap.pdf, id=693, 964.71855pt x 606.04292pt>
 File: figures/l1_embedding_projection_umap.pdf Graphic file (type pdf)
 <use figures/l1_embedding_projection_umap.pdf>
-Package pdftex.def Info: figures/l1_embedding_projection_umap.pdf  used on input line 519.
+Package pdftex.def Info: figures/l1_embedding_projection_umap.pdf  used on input line 523.
 (pdftex.def)             Requested size: 400.61703pt x 251.66957pt.
 
 
-[18 <./figures/l1_category_accuracy_sampling_comparison.pdf>]
-<figures/l1_confusion_matrix_normalized.pdf, id=755, 855.25749pt x 772.94019pt>
+[18 <./figures/l1_embedding_projection_umap.pdf>]
+<figures/l1_confusion_matrix_normalized.pdf, id=759, 855.25749pt x 772.94019pt>
 File: figures/l1_confusion_matrix_normalized.pdf Graphic file (type pdf)
 <use figures/l1_confusion_matrix_normalized.pdf>
-Package pdftex.def Info: figures/l1_confusion_matrix_normalized.pdf  used on input line 550.
+Package pdftex.def Info: figures/l1_confusion_matrix_normalized.pdf  used on input line 556.
 (pdftex.def)             Requested size: 409.71692pt x 370.27583pt.
 
 
-[19 <./figures/l1_embedding_projection_umap.pdf>]
+[19 <./figures/l1_confusion_matrix_normalized.pdf>]
 
-[20 <./figures/l1_confusion_matrix_normalized.pdf>]
+[20]
 Chapitre 6.
-
-LaTeX Warning: Reference `fig:l2-l7-embedding-generation-cost-main' on page 21 undefined on input line 586.
-
 
 
 [21
 
 ]
-Underfull \hbox (badness 1127) in paragraph at lines 645--645
-[]\T1/lmr/m/n/12 Conserver plu-sieurs che-mins
- []
-
-
-Underfull \hbox (badness 5446) in paragraph at lines 645--645
-\T1/lmr/m/n/12 dé-ci-sion lo-cale trop
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 645--645
-[]\T1/lmr/m/n/12 Coût su-pé-rieur au
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 645--645
-\T1/lmr/m/n/12 greedy et marges
- []
-
-
-Underfull \hbox (badness 1997) in paragraph at lines 645--645
-[]\T1/lmr/m/n/12 Reranker les meilleurs che-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 645--645
-[]\T1/lmr/m/n/12 Trop coû-teux pour
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 645--645
-[]\T1/lmr/m/n/12 Grouper les pro-duits par
- []
-
-
-Underfull \hbox (badness 7433) in paragraph at lines 645--645
-[]\T1/lmr/m/n/12 Capture une struc-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 645--645
-\T1/lmr/m/n/12 ca-té-go-ries sont ab-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 645--645
-[]\T1/lmr/m/n/12 Marges faibles et
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 645--645
-\T1/lmr/m/n/12 risque de che-mins
- []
-
-
 
 [22]
 
 [23]
-Overfull \hbox (2.0187pt too wide) in paragraph at lines 675--675
-|[]\T1/lmr/bx/n/14.4 Pipeline 2 : Clus-te-ring Hié-rar-chique Contraint par la Taxo-
+Underfull \hbox (badness 1127) in paragraph at lines 709--709
+[]\T1/lmr/m/n/12 Conserver plu-sieurs che-mins
+ []
+
+
+Underfull \hbox (badness 5446) in paragraph at lines 709--709
+\T1/lmr/m/n/12 dé-ci-sion lo-cale trop
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 709--709
+[]\T1/lmr/m/n/12 Coût su-pé-rieur au
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 709--709
+\T1/lmr/m/n/12 greedy et marges
+ []
+
+
+Underfull \hbox (badness 1997) in paragraph at lines 709--709
+[]\T1/lmr/m/n/12 Reranker les meilleurs che-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 709--709
+[]\T1/lmr/m/n/12 Trop coû-teux pour
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 709--709
+[]\T1/lmr/m/n/12 Grouper les pro-duits par
+ []
+
+
+Underfull \hbox (badness 7433) in paragraph at lines 709--709
+[]\T1/lmr/m/n/12 Capture une struc-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 709--709
+\T1/lmr/m/n/12 ca-té-go-ries sont ab-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 709--709
+[]\T1/lmr/m/n/12 Marges faibles et
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 709--709
+\T1/lmr/m/n/12 risque de che-mins
  []
 
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 730.
+(Font)              <5> on input line 741.
 
 
 [24]
-
-LaTeX Warning: Reference `fig:l2-l7-pipeline-runtime-cost-main' on page 25 undefined on input line 733.
-
-<figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf, id=907, 895.66933pt x 360.09706pt>
+<figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf, id=856, 895.66933pt x 360.09706pt>
 File: figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf  used on input line 753.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf  used on input line 764.
 (pdftex.def)             Requested size: 418.82375pt x 168.38298pt.
-<figures/l2_l7_family3_qwen/family3_exact_path_agreement_heatmap.pdf, id=909, 542.025pt x 448.07399pt>
+<figures/l2_l7_family3_qwen/family3_exact_path_agreement_heatmap.pdf, id=858, 542.025pt x 448.07399pt>
 File: figures/l2_l7_family3_qwen/family3_exact_path_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_qwen/family3_exact_path_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_qwen/family3_exact_path_agreement_heatmap.pdf  used on input line 762.
+Package pdftex.def Info: figures/l2_l7_family3_qwen/family3_exact_path_agreement_heatmap.pdf  used on input line 773.
 (pdftex.def)             Requested size: 218.51521pt x 180.64168pt.
-<figures/l2_l7_family3_jasper/family3_exact_path_agreement_heatmap.pdf, id=910, 542.025pt x 448.07399pt>
+<figures/l2_l7_family3_jasper/family3_exact_path_agreement_heatmap.pdf, id=859, 542.025pt x 448.07399pt>
 File: figures/l2_l7_family3_jasper/family3_exact_path_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_jasper/family3_exact_path_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_jasper/family3_exact_path_agreement_heatmap.pdf  used on input line 764.
+Package pdftex.def Info: figures/l2_l7_family3_jasper/family3_exact_path_agreement_heatmap.pdf  used on input line 775.
 (pdftex.def)             Requested size: 218.51521pt x 180.64168pt.
 
 
@@ -784,233 +770,226 @@ Chapitre 8.
 
 [34]
 Annexe A.
+<figures/dataset_l1_distribution.pdf, id=1098, 751.52583pt x 507.64343pt>
+File: figures/dataset_l1_distribution.pdf Graphic file (type pdf)
+<use figures/dataset_l1_distribution.pdf>
+Package pdftex.def Info: figures/dataset_l1_distribution.pdf  used on input line 1013.
+(pdftex.def)             Requested size: 418.82375pt x 282.91508pt.
 
 
 [35
 
 ]
-<figures/dataset_l1_distribution.pdf, id=1161, 751.52583pt x 507.64343pt>
-File: figures/dataset_l1_distribution.pdf Graphic file (type pdf)
-<use figures/dataset_l1_distribution.pdf>
-Package pdftex.def Info: figures/dataset_l1_distribution.pdf  used on input line 938.
-(pdftex.def)             Requested size: 418.82375pt x 282.91508pt.
-<figures/dataset_l1_median_price.pdf, id=1162, 751.52583pt x 507.64343pt>
+<figures/dataset_l1_median_price.pdf, id=1109, 751.52583pt x 507.64343pt>
 File: figures/dataset_l1_median_price.pdf Graphic file (type pdf)
 <use figures/dataset_l1_median_price.pdf>
-Package pdftex.def Info: figures/dataset_l1_median_price.pdf  used on input line 945.
+Package pdftex.def Info: figures/dataset_l1_median_price.pdf  used on input line 1020.
 (pdftex.def)             Requested size: 218.51521pt x 147.60013pt.
-<figures/taxonomy_depth_distribution.pdf, id=1163, 606.8064pt x 338.53163pt>
+<figures/taxonomy_depth_distribution.pdf, id=1110, 606.8064pt x 338.53163pt>
 File: figures/taxonomy_depth_distribution.pdf Graphic file (type pdf)
 <use figures/taxonomy_depth_distribution.pdf>
-Package pdftex.def Info: figures/taxonomy_depth_distribution.pdf  used on input line 947.
+Package pdftex.def Info: figures/taxonomy_depth_distribution.pdf  used on input line 1022.
 (pdftex.def)             Requested size: 218.51521pt x 121.90744pt.
-<figures/taxonomy_l1_branch_sizes.pdf, id=1164, 751.52583pt x 679.85052pt>
+<figures/taxonomy_l1_branch_sizes.pdf, id=1111, 751.52583pt x 679.85052pt>
 File: figures/taxonomy_l1_branch_sizes.pdf Graphic file (type pdf)
 <use figures/taxonomy_l1_branch_sizes.pdf>
-Package pdftex.def Info: figures/taxonomy_l1_branch_sizes.pdf  used on input line 954.
+Package pdftex.def Info: figures/taxonomy_l1_branch_sizes.pdf  used on input line 1029.
 (pdftex.def)             Requested size: 218.51521pt x 197.67029pt.
-<figures/taxonomy_l1_l2_tree.pdf, id=1165, 826.58812pt x 776.83022pt>
+<figures/taxonomy_l1_l2_tree.pdf, id=1112, 826.58812pt x 776.83022pt>
 File: figures/taxonomy_l1_l2_tree.pdf Graphic file (type pdf)
 <use figures/taxonomy_l1_l2_tree.pdf>
-Package pdftex.def Info: figures/taxonomy_l1_l2_tree.pdf  used on input line 956.
+Package pdftex.def Info: figures/taxonomy_l1_l2_tree.pdf  used on input line 1031.
 (pdftex.def)             Requested size: 218.51521pt x 205.36118pt.
 
 
 [36 <./figures/dataset_l1_distribution.pdf> <./figures/dataset_l1_median_price.pdf> <./figures/taxonomy_depth_distribution.pdf>]
-Overfull \hbox (5.35887pt too wide) in paragraph at lines 961--961
+Overfull \hbox (5.35887pt too wide) in paragraph at lines 1036--1036
 |[]\T1/lmr/bx/n/17.28 Figures d'In-tui-tion pour l'En-ri-chis-se-ment des Ca-
  []
 
 File: figures/l1_triplet_loss_alpha05.pdf Graphic file (type pdf)
 <use figures/l1_triplet_loss_alpha05.pdf>
-Package pdftex.def Info: figures/l1_triplet_loss_alpha05.pdf  used on input line 994.
+Package pdftex.def Info: figures/l1_triplet_loss_alpha05.pdf  used on input line 1069.
 (pdftex.def)             Requested size: 373.3035pt x 220.88617pt.
 
 
 [37 <./figures/taxonomy_l1_branch_sizes.pdf> <./figures/taxonomy_l1_l2_tree.pdf>]
 File: figures/l1_category_accuracy.pdf Graphic file (type pdf)
 <use figures/l1_category_accuracy.pdf>
-Package pdftex.def Info: figures/l1_category_accuracy.pdf  used on input line 1001.
+Package pdftex.def Info: figures/l1_category_accuracy.pdf  used on input line 1076.
 (pdftex.def)             Requested size: 218.51521pt x 158.2073pt.
 File: figures/l1_category_accuracy_balanced_sampling.pdf Graphic file (type pdf)
 <use figures/l1_category_accuracy_balanced_sampling.pdf>
-Package pdftex.def Info: figures/l1_category_accuracy_balanced_sampling.pdf  used on input line 1003.
+Package pdftex.def Info: figures/l1_category_accuracy_balanced_sampling.pdf  used on input line 1078.
 (pdftex.def)             Requested size: 218.51521pt x 158.2073pt.
 File: figures/l1_embedding_projection_umap.pdf Graphic file (type pdf)
 <use figures/l1_embedding_projection_umap.pdf>
-Package pdftex.def Info: figures/l1_embedding_projection_umap.pdf  used on input line 1010.
+Package pdftex.def Info: figures/l1_embedding_projection_umap.pdf  used on input line 1085.
 (pdftex.def)             Requested size: 386.96027pt x 243.09718pt.
 
 
 [38]
 File: figures/l1_confusion_matrix_normalized.pdf Graphic file (type pdf)
 <use figures/l1_confusion_matrix_normalized.pdf>
-Package pdftex.def Info: figures/l1_confusion_matrix_normalized.pdf  used on input line 1017.
+Package pdftex.def Info: figures/l1_confusion_matrix_normalized.pdf  used on input line 1092.
 (pdftex.def)             Requested size: 432.48051pt x 390.85655pt.
 
 
 [39]
-
-[40]
-<figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_win_rates.pdf, id=1525, 931.90224pt x 360.46078pt>
-File: figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_win_rates.pdf Graphic file (type pdf)
-<use figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_win_rates.pdf>
-Package pdftex.def Info: figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_win_rates.pdf  used on input line 1088.
-(pdftex.def)             Requested size: 218.51521pt x 84.52129pt.
-<figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_mean_scores.pdf, id=1526, 931.99945pt x 360.46078pt>
-File: figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_mean_scores.pdf Graphic file (type pdf)
-<use figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_mean_scores.pdf>
-Package pdftex.def Info: figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_mean_scores.pdf  used on input line 1090.
-(pdftex.def)             Requested size: 218.51521pt x 84.51028pt.
-
-Overfull \hbox (0.558pt too wide) in paragraph at lines 1095--1095
+Overfull \hbox (0.558pt too wide) in paragraph at lines 1098--1098
 |[]\T1/lmr/bx/n/17.28 Comparaison dé-taillée des stra-té-gies de sam-pling
  []
 
+<figures/l1_category_accuracy_sampling_comparison.pdf, id=1467, 974.41544pt x 627.85187pt>
 File: figures/l1_category_accuracy_sampling_comparison.pdf Graphic file (type pdf)
 <use figures/l1_category_accuracy_sampling_comparison.pdf>
-Package pdftex.def Info: figures/l1_category_accuracy_sampling_comparison.pdf  used on input line 1104.
-(pdftex.def)             Requested size: 446.1401pt x 287.46455pt.
+Package pdftex.def Info: figures/l1_category_accuracy_sampling_comparison.pdf  used on input line 1108.
+(pdftex.def)             Requested size: 455.23955pt x 293.32765pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-[41 <./figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_win_rates.pdf> <./figures/l2_l7_nlp_audit_full/l2_l7_nlp_audit_mean_scores.pdf>]
-<figures/l1_embedding_projection_pca.pdf, id=1637, 750.1232pt x 533.77292pt>
+
+[40]
+
+[41 <./figures/l1_category_accuracy_sampling_comparison.pdf>]
+
+[42]
+<figures/l1_embedding_projection_pca.pdf, id=1549, 750.1232pt x 533.77292pt>
 File: figures/l1_embedding_projection_pca.pdf Graphic file (type pdf)
 <use figures/l1_embedding_projection_pca.pdf>
-Package pdftex.def Info: figures/l1_embedding_projection_pca.pdf  used on input line 1122.
+Package pdftex.def Info: figures/l1_embedding_projection_pca.pdf  used on input line 1215.
 (pdftex.def)             Requested size: 432.48051pt x 307.75594pt.
 
 
-[42 <./figures/l1_embedding_projection_pca.pdf>]
-Overfull \hbox (5.14476pt too wide) in paragraph at lines 1134--1135
+[43]
+Overfull \hbox (5.14476pt too wide) in paragraph at lines 1227--1228
 \T1/lmr/m/n/12 Sup-po-sons que deux pi-pe-lines $\OML/lmm/m/it/12 A$ \T1/lmr/m/n/12 et $\OML/lmm/m/it/12 B$ \T1/lmr/m/n/12 pro-duisent res-pec-ti-ve-ment des la-bels dans $\OMS/lmsy/m/n/12 f\OML/lmm/m/it/12 a[]; [] ; a[]\OMS/lmsy/m/n/12 g$
  []
 
 
 
-[43]
-Underfull \hbox (badness 10000) in paragraph at lines 1203--1203
+[44 <./figures/l1_embedding_projection_pca.pdf>]
+
+[45]
+Underfull \hbox (badness 10000) in paragraph at lines 1296--1296
 []\T1/lmr/m/n/8 Millions d'opé-ra-tions
  []
 
 
-Underfull \hbox (badness 5316) in paragraph at lines 1203--1203
+Underfull \hbox (badness 5316) in paragraph at lines 1296--1296
 \T1/lmr/m/n/8 Qwen3. Le clus-te-ring a une marge
  []
 
 
-Underfull \hbox (badness 2865) in paragraph at lines 1203--1203
+Underfull \hbox (badness 2865) in paragraph at lines 1296--1296
 \T1/lmr/m/n/8 mé-diane plus éle-vée, car l'af-fec-ta-tion
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1203--1203
+Underfull \hbox (badness 10000) in paragraph at lines 1296--1296
 []\T1/lmr/m/n/8 Profondeur moyenne
  []
 
 
-Underfull \hbox (badness 1389) in paragraph at lines 1203--1203
+Underfull \hbox (badness 1389) in paragraph at lines 1296--1296
 []\T1/lmr/m/n/8 Diversité et concen-tra-
  []
 
 
-Underfull \hbox (badness 1418) in paragraph at lines 1203--1203
+Underfull \hbox (badness 1418) in paragraph at lines 1296--1296
 []\T1/lmr/m/n/8 Accord ni-veau par ni-
  []
 
 
-Underfull \hbox (badness 1715) in paragraph at lines 1203--1203
+Underfull \hbox (badness 1715) in paragraph at lines 1296--1296
 \T1/lmr/m/n/8 pe-lines di-vergent. Cette me-tric est
  []
 
 
-Underfull \hbox (badness 1735) in paragraph at lines 1203--1203
+Underfull \hbox (badness 1735) in paragraph at lines 1296--1296
 []\T1/lmr/m/n/8 Score NLP ex-terne et
  []
 
 
 
-[44]
-
-[45]
+[46]
 File: figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf  used on input line 1237.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_divergence_by_depth.pdf  used on input line 1330.
 (pdftex.def)             Requested size: 446.13727pt x 179.36674pt.
-<figures/l2_l7_family3_annex/family3_qwen_level_2_agreement_heatmap.pdf, id=1714, 520.34402pt x 433.62pt>
+<figures/l2_l7_family3_annex/family3_qwen_level_2_agreement_heatmap.pdf, id=1625, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_qwen_level_2_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_qwen_level_2_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_2_agreement_heatmap.pdf  used on input line 1246.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_2_agreement_heatmap.pdf  used on input line 1339.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
-<figures/l2_l7_family3_annex/family3_jasper_level_2_agreement_heatmap.pdf, id=1715, 520.34402pt x 433.62pt>
+<figures/l2_l7_family3_annex/family3_jasper_level_2_agreement_heatmap.pdf, id=1626, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_jasper_level_2_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_jasper_level_2_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_2_agreement_heatmap.pdf  used on input line 1248.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_2_agreement_heatmap.pdf  used on input line 1341.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
 
 
-[46]
-<figures/l2_l7_family3_annex/family3_qwen_level_3_agreement_heatmap.pdf, id=1723, 520.34402pt x 433.62pt>
+[47]
+<figures/l2_l7_family3_annex/family3_qwen_level_3_agreement_heatmap.pdf, id=1633, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_qwen_level_3_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_qwen_level_3_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_3_agreement_heatmap.pdf  used on input line 1255.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_3_agreement_heatmap.pdf  used on input line 1348.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
-<figures/l2_l7_family3_annex/family3_jasper_level_3_agreement_heatmap.pdf, id=1724, 520.34402pt x 433.62pt>
+<figures/l2_l7_family3_annex/family3_jasper_level_3_agreement_heatmap.pdf, id=1634, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_jasper_level_3_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_jasper_level_3_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_3_agreement_heatmap.pdf  used on input line 1257.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_3_agreement_heatmap.pdf  used on input line 1350.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
-<figures/l2_l7_family3_annex/family3_qwen_level_4_agreement_heatmap.pdf, id=1725, 520.34402pt x 433.62pt>
+<figures/l2_l7_family3_annex/family3_qwen_level_4_agreement_heatmap.pdf, id=1635, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_qwen_level_4_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_qwen_level_4_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_4_agreement_heatmap.pdf  used on input line 1264.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_4_agreement_heatmap.pdf  used on input line 1357.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
-<figures/l2_l7_family3_annex/family3_jasper_level_4_agreement_heatmap.pdf, id=1726, 520.34402pt x 433.62pt>
+<figures/l2_l7_family3_annex/family3_jasper_level_4_agreement_heatmap.pdf, id=1636, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_jasper_level_4_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_jasper_level_4_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_4_agreement_heatmap.pdf  used on input line 1266.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_4_agreement_heatmap.pdf  used on input line 1359.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
 
 
-[47 <./figures/l2_l7_family3_annex/family3_qwen_level_2_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_2_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_qwen_level_3_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_3_agreement_heatmap.pdf>]
-<figures/l2_l7_family3_annex/family3_qwen_level_5_agreement_heatmap.pdf, id=1945, 520.34402pt x 433.62pt>
+[48 <./figures/l2_l7_family3_annex/family3_qwen_level_2_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_2_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_qwen_level_3_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_3_agreement_heatmap.pdf>]
+<figures/l2_l7_family3_annex/family3_qwen_level_5_agreement_heatmap.pdf, id=1857, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_qwen_level_5_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_qwen_level_5_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_5_agreement_heatmap.pdf  used on input line 1273.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_5_agreement_heatmap.pdf  used on input line 1366.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
-<figures/l2_l7_family3_annex/family3_jasper_level_5_agreement_heatmap.pdf, id=1946, 520.34402pt x 433.62pt>
+<figures/l2_l7_family3_annex/family3_jasper_level_5_agreement_heatmap.pdf, id=1858, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_jasper_level_5_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_jasper_level_5_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_5_agreement_heatmap.pdf  used on input line 1275.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_5_agreement_heatmap.pdf  used on input line 1368.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
-<figures/l2_l7_family3_annex/family3_qwen_level_6_agreement_heatmap.pdf, id=1947, 520.34402pt x 433.62pt>
+<figures/l2_l7_family3_annex/family3_qwen_level_6_agreement_heatmap.pdf, id=1859, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_qwen_level_6_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_qwen_level_6_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_6_agreement_heatmap.pdf  used on input line 1282.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_6_agreement_heatmap.pdf  used on input line 1375.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
-<figures/l2_l7_family3_annex/family3_jasper_level_6_agreement_heatmap.pdf, id=1948, 520.34402pt x 433.62pt>
+<figures/l2_l7_family3_annex/family3_jasper_level_6_agreement_heatmap.pdf, id=1860, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_jasper_level_6_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_jasper_level_6_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_6_agreement_heatmap.pdf  used on input line 1284.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_6_agreement_heatmap.pdf  used on input line 1377.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
 
 
-[48 <./figures/l2_l7_family3_annex/family3_qwen_level_4_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_4_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_qwen_level_5_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_5_agreement_heatmap.pdf>]
-<figures/l2_l7_family3_annex/family3_qwen_level_7_agreement_heatmap.pdf, id=2169, 520.34402pt x 433.62pt>
+[49 <./figures/l2_l7_family3_annex/family3_qwen_level_4_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_4_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_qwen_level_5_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_5_agreement_heatmap.pdf>]
+<figures/l2_l7_family3_annex/family3_qwen_level_7_agreement_heatmap.pdf, id=2080, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_qwen_level_7_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_qwen_level_7_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_7_agreement_heatmap.pdf  used on input line 1291.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_qwen_level_7_agreement_heatmap.pdf  used on input line 1384.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
-<figures/l2_l7_family3_annex/family3_jasper_level_7_agreement_heatmap.pdf, id=2170, 520.34402pt x 433.62pt>
+<figures/l2_l7_family3_annex/family3_jasper_level_7_agreement_heatmap.pdf, id=2081, 520.34402pt x 433.62pt>
 File: figures/l2_l7_family3_annex/family3_jasper_level_7_agreement_heatmap.pdf Graphic file (type pdf)
 <use figures/l2_l7_family3_annex/family3_jasper_level_7_agreement_heatmap.pdf>
-Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_7_agreement_heatmap.pdf  used on input line 1293.
+Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_7_agreement_heatmap.pdf  used on input line 1386.
 (pdftex.def)             Requested size: 218.51521pt x 182.0993pt.
 
 
-[49 <./figures/l2_l7_family3_annex/family3_qwen_level_6_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_6_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_qwen_level_7_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_7_agreement_heatmap.pdf>]
-
-[50]
+[50 <./figures/l2_l7_family3_annex/family3_qwen_level_6_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_6_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_qwen_level_7_agreement_heatmap.pdf> <./figures/l2_l7_family3_annex/family3_jasper_level_7_agreement_heatmap.pdf>]
 
 [51]
 
@@ -1021,35 +1000,22 @@ Package pdftex.def Info: figures/l2_l7_family3_annex/family3_jasper_level_7_agre
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `rapport_final.out' has not changed.
-(rerunfilecheck)             Checksum: 0075C7A9CC36E6709073A69E2F977884;11547.
+(rerunfilecheck)             Checksum: 2D52AA18950A0775DFB8FFD8B6F77A92;11632.
  ) 
 Here is how much of TeX's memory you used:
- 15370 strings out of 473190
- 260440 string characters out of 5715800
- 677910 words of memory out of 5000000
- 38180 multiletter control sequences out of 15000+600000
- 638141 words of font info for 80 fonts, out of 8000000 for 9000
+ 15353 strings out of 473190
+ 259227 string characters out of 5715800
+ 676443 words of memory out of 5000000
+ 38161 multiletter control sequences out of 15000+600000
+ 638459 words of font info for 81 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,11n,79p,1005b,730s stack positions out of 10000i,1000n,20000p,200000b,200000s
-
-pdfTeX warning (dest): name{table.caption.40} has been referenced but does not exist, replaced by a fixed one
-
-
-pdfTeX warning (dest): name{figure.caption.39} has been referenced but does not exist, replaced by a fixed one
-
-</usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmtt12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on rapport_final.pdf (54 pages, 1769829 bytes).
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmbx8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmsy8.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/lm/lmtt12.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on rapport_final.pdf (54 pages, 1775725 bytes).
 PDF statistics:
- 2556 PDF objects out of 2984 (max. 8388607)
- 951 compressed objects within 10 object streams
- 219 named destinations out of 1000 (max. 500000)
- 529 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 2466 PDF objects out of 2487 (max. 8388607)
+ 947 compressed objects within 10 object streams
+ 220 named destinations out of 1000 (max. 500000)
+ 519 words of extra memory for PDF output out of 10000 (max. 10000000)
 

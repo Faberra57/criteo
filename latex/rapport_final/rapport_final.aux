@@ -62,16 +62,18 @@
 \@writefile{lot}{\contentsline {table}{\numberline {3.2}{\ignorespaces Distribution des langues détectées dans le dataset produit}}{10}{table.caption.3}\protected@file@percent }
 \newlabel{tab:lang-dist-main}{{3.2}{10}{Distribution des langues détectées dans le dataset produit}{table.caption.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3.2}Prétraitement et dataset final}{10}{section.3.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {3.3}{\ignorespaces Structure du dataset final \texttt  {preprocessed\_lv2.parquet}}}{11}{table.caption.4}\protected@file@percent }
-\newlabel{tab:final-dataset-schema}{{3.3}{11}{Structure du dataset final \texttt {preprocessed\_lv2.parquet}}{table.caption.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.3}{\ignorespaces Split train/test stratifié utilisé pour l'évaluation out-of-sample}}{11}{table.caption.4}\protected@file@percent }
+\newlabel{tab:train-test-stratified-split}{{3.3}{11}{Split train/test stratifié utilisé pour l'évaluation out-of-sample}{table.caption.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3.4}{\ignorespaces Structure du dataset final \texttt  {preprocessed\_lv2.parquet}}}{11}{table.caption.5}\protected@file@percent }
+\newlabel{tab:final-dataset-schema}{{3.4}{11}{Structure du dataset final \texttt {preprocessed\_lv2.parquet}}{table.caption.5}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {4}Enrichissement des Catégories et Prototypes Textuels}{12}{chapter.4}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \newlabel{chap:category-enrichment}{{4}{12}{Enrichissement des Catégories et Prototypes Textuels}{chapter.4}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Recouvrement d'un manifold sémantique de catégorie par des prototypes enrichis. La figure est représentée en dimension 3 pour l'intuition, mais elle illustre un espace d'embeddings de dimension beaucoup plus élevée.}}{13}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:category-prototype-manifold-coverage-main}{{4.1}{13}{Recouvrement d'un manifold sémantique de catégorie par des prototypes enrichis. La figure est représentée en dimension 3 pour l'intuition, mais elle illustre un espace d'embeddings de dimension beaucoup plus élevée}{figure.caption.5}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Illustration de deux manifolds sémantiques proches ou entrelacés dans un espace d'embeddings. L'ajout de prototypes aide à mieux couvrir les régions pertinentes de chaque catégorie.}}{14}{figure.caption.6}\protected@file@percent }
-\newlabel{fig:category-interlaced-manifolds-enrichment-main}{{4.2}{14}{Illustration de deux manifolds sémantiques proches ou entrelacés dans un espace d'embeddings. L'ajout de prototypes aide à mieux couvrir les régions pertinentes de chaque catégorie}{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Recouvrement d'un manifold sémantique de catégorie par des prototypes enrichis. La figure est représentée en dimension 3 pour l'intuition, mais elle illustre un espace d'embeddings de dimension beaucoup plus élevée.}}{13}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:category-prototype-manifold-coverage-main}{{4.1}{13}{Recouvrement d'un manifold sémantique de catégorie par des prototypes enrichis. La figure est représentée en dimension 3 pour l'intuition, mais elle illustre un espace d'embeddings de dimension beaucoup plus élevée}{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Illustration de deux manifolds sémantiques proches ou entrelacés dans un espace d'embeddings. L'ajout de prototypes aide à mieux couvrir les régions pertinentes de chaque catégorie.}}{14}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:category-interlaced-manifolds-enrichment-main}{{4.2}{14}{Illustration de deux manifolds sémantiques proches ou entrelacés dans un espace d'embeddings. L'ajout de prototypes aide à mieux couvrir les régions pertinentes de chaque catégorie}{figure.caption.7}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {5}Modélisation Supervisée du Niveau 1}{15}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
@@ -79,30 +81,28 @@
 \@writefile{toc}{\contentsline {section}{\numberline {5.1}Modèle et training objective}{15}{section.5.1}\protected@file@percent }
 \newlabel{sec:l1-embedding-choice}{{5.1}{15}{Modèle et training objective}{section.5.1}{}}
 \newlabel{sec:l1-training-objective}{{5.1}{15}{Modèle et training objective}{section.5.1}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Comparaison de modèles d'embeddings compacts dans le snapshot MTEB utilisé}}{15}{table.caption.7}\protected@file@percent }
-\newlabel{tab:l1-mteb-compact-embedders-main}{{5.1}{15}{Comparaison de modèles d'embeddings compacts dans le snapshot MTEB utilisé}{table.caption.7}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Configuration finale du fine-tuning supervisé L1}}{16}{table.caption.8}\protected@file@percent }
-\newlabel{tab:l1-finetuning-hyperparams}{{5.2}{16}{Configuration finale du fine-tuning supervisé L1}{table.caption.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Évolution de la training loss lors du fine-tuning supervisé du Niveau 1 avec sampling tempéré $\alpha =0{,}5$.}}{16}{figure.caption.9}\protected@file@percent }
-\newlabel{fig:l1-triplet-loss-main}{{5.1}{16}{Évolution de la training loss lors du fine-tuning supervisé du Niveau 1 avec sampling tempéré $\alpha =0{,}5$}{figure.caption.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Comparaison de modèles d'embeddings compacts dans le snapshot MTEB utilisé}}{15}{table.caption.8}\protected@file@percent }
+\newlabel{tab:l1-mteb-compact-embedders-main}{{5.1}{15}{Comparaison de modèles d'embeddings compacts dans le snapshot MTEB utilisé}{table.caption.8}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Configuration finale du fine-tuning supervisé L1}}{16}{table.caption.9}\protected@file@percent }
+\newlabel{tab:l1-finetuning-hyperparams}{{5.2}{16}{Configuration finale du fine-tuning supervisé L1}{table.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Évolution de la training loss lors du fine-tuning supervisé du Niveau 1.}}{16}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:l1-triplet-loss-main}{{5.1}{16}{Évolution de la training loss lors du fine-tuning supervisé du Niveau 1}{figure.caption.10}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5.2}Correction du Déséquilibre par Sampling}{17}{section.5.2}\protected@file@percent }
 \newlabel{sec:l1-sampling}{{5.2}{17}{Correction du Déséquilibre par Sampling}{section.5.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Accuracy top-1 par catégorie sans sampling équilibré, à gauche, et avec balanced sampling uniforme, à droite.}}{17}{figure.caption.10}\protected@file@percent }
-\newlabel{fig:l1-accuracy-baseline-balanced-main}{{5.2}{17}{Accuracy top-1 par catégorie sans sampling équilibré, à gauche, et avec balanced sampling uniforme, à droite}{figure.caption.10}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces Comparaison globale des stratégies de sampling L1}}{17}{table.caption.11}\protected@file@percent }
-\newlabel{tab:l1-sampling-results}{{5.3}{17}{Comparaison globale des stratégies de sampling L1}{table.caption.11}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces Comparaison des accuracies top-1 par catégorie pour les cinq stratégies de sampling testées.}}{18}{figure.caption.12}\protected@file@percent }
-\newlabel{fig:l1-category-accuracy-sampling-comparison-main}{{5.3}{18}{Comparaison des accuracies top-1 par catégorie pour les cinq stratégies de sampling testées}{figure.caption.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Accuracy top-1 par catégorie sans sampling équilibré, à gauche, et avec balanced sampling uniforme, à droite.}}{17}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:l1-accuracy-baseline-balanced-main}{{5.2}{17}{Accuracy top-1 par catégorie sans sampling équilibré, à gauche, et avec balanced sampling uniforme, à droite}{figure.caption.11}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces Comparaison globale des stratégies de sampling L1}}{17}{table.caption.12}\protected@file@percent }
+\newlabel{tab:l1-sampling-results}{{5.3}{17}{Comparaison globale des stratégies de sampling L1}{table.caption.12}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5.3}Visualisation de l'Espace Appris}{18}{section.5.3}\protected@file@percent }
 \newlabel{sec:l1-umap-main}{{5.3}{18}{Visualisation de l'Espace Appris}{section.5.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces Projection UMAP des embeddings produits après fine-tuning supervisé du Niveau 1.}}{19}{figure.caption.13}\protected@file@percent }
-\newlabel{fig:l1-embedding-umap-main}{{5.4}{19}{Projection UMAP des embeddings produits après fine-tuning supervisé du Niveau 1}{figure.caption.13}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces Projection UMAP des embeddings produits après fine-tuning supervisé du Niveau 1.}}{18}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:l1-embedding-umap-main}{{5.3}{18}{Projection UMAP des embeddings produits après fine-tuning supervisé du Niveau 1}{figure.caption.13}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {5.4}Final Classification Metrics}{19}{section.5.4}\protected@file@percent }
 \newlabel{sec:l1-final-metrics}{{5.4}{19}{Final Classification Metrics}{section.5.4}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces Final classification metrics du modèle Niveau 1 retenu}}{19}{table.caption.14}\protected@file@percent }
 \newlabel{tab:l1-final-classification-metrics}{{5.4}{19}{Final classification metrics du modèle Niveau 1 retenu}{table.caption.14}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces Confusion matrix normalisée par catégorie vraie pour le modèle Niveau 1 retenu.}}{20}{figure.caption.15}\protected@file@percent }
-\newlabel{fig:l1-confusion-matrix-normalized-main}{{5.5}{20}{Confusion matrix normalisée par catégorie vraie pour le modèle Niveau 1 retenu}{figure.caption.15}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces Confusion matrix normalisée par catégorie vraie pour le modèle Niveau 1 retenu.}}{19}{figure.caption.15}\protected@file@percent }
+\newlabel{fig:l1-confusion-matrix-normalized-main}{{5.4}{19}{Confusion matrix normalisée par catégorie vraie pour le modèle Niveau 1 retenu}{figure.caption.15}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {6}Recherche Zéro-Shot pour L2--L7}{21}{chapter.6}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
@@ -113,20 +113,20 @@
 \newlabel{tab:l2-l7-embedding-generation-comparison}{{6.1}{21}{Coût de génération des embeddings partagés L2--L7}{table.caption.16}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {6.2}Méthodologie d'Assessment Non Supervisé}{21}{section.6.2}\protected@file@percent }
 \newlabel{sec:l2-l7-unsupervised-metrics}{{6.2}{21}{Méthodologie d'Assessment Non Supervisé}{section.6.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6.3}Pipelines Comparés}{23}{section.6.3}\protected@file@percent }
-\newlabel{sec:l2-l7-pipeline-local-decoding}{{6.3}{23}{Pipelines Comparés}{section.6.3}{}}
-\newlabel{sec:l2-l7-pipeline-clustering}{{6.3}{23}{Pipelines Comparés}{section.6.3}{}}
-\newlabel{sec:l2-l7-pipeline-global-path}{{6.3}{23}{Pipelines Comparés}{section.6.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {6.2}{\ignorespaces Résumé des pipelines zéro-shot L2--L7}}{23}{table.caption.17}\protected@file@percent }
-\newlabel{tab:l2-l7-pipeline-summary}{{6.2}{23}{Résumé des pipelines zéro-shot L2--L7}{table.caption.17}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.1}Pipeline 1 : Décodage Hiérarchique Local}{23}{subsection.6.3.1}\protected@file@percent }
-\newlabel{sec:l2-l7-pipeline1-local-decoding-main}{{6.3.1}{23}{Pipeline 1 : Décodage Hiérarchique Local}{subsection.6.3.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.2}Pipeline 2 : Clustering Hiérarchique Contraint par la Taxonomie}{24}{subsection.6.3.2}\protected@file@percent }
-\newlabel{sec:l2-l7-pipeline2-clustering-main}{{6.3.2}{24}{Pipeline 2 : Clustering Hiérarchique Contraint par la Taxonomie}{subsection.6.3.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.3}Pipeline 3 : Retrieval de Chemins Globaux}{24}{subsection.6.3.3}\protected@file@percent }
-\newlabel{sec:l2-l7-pipeline3-global-path-main}{{6.3.3}{24}{Pipeline 3 : Retrieval de Chemins Globaux}{subsection.6.3.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6.4}Résultats Synthétiques}{25}{section.6.4}\protected@file@percent }
-\newlabel{sec:l2-l7-pipeline-agreement}{{6.4}{25}{Résultats Synthétiques}{section.6.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}Pipeline 1 : Décodage Hiérarchique Local}{22}{section.6.3}\protected@file@percent }
+\newlabel{sec:l2-l7-pipeline1-local-decoding-main}{{6.3}{22}{Pipeline 1 : Décodage Hiérarchique Local}{section.6.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.4}Pipeline 2 : Clustering Hiérarchique Contraint par la Taxonomie}{23}{section.6.4}\protected@file@percent }
+\newlabel{sec:l2-l7-pipeline2-clustering-main}{{6.4}{23}{Pipeline 2 : Clustering Hiérarchique Contraint par la Taxonomie}{section.6.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.5}Pipeline 3 : Retrieval de Chemins Globaux}{24}{section.6.5}\protected@file@percent }
+\newlabel{sec:l2-l7-pipeline3-global-path-main}{{6.5}{24}{Pipeline 3 : Retrieval de Chemins Globaux}{section.6.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.6}Pipelines Comparés}{24}{section.6.6}\protected@file@percent }
+\newlabel{sec:l2-l7-pipeline-local-decoding}{{6.6}{24}{Pipelines Comparés}{section.6.6}{}}
+\newlabel{sec:l2-l7-pipeline-clustering}{{6.6}{24}{Pipelines Comparés}{section.6.6}{}}
+\newlabel{sec:l2-l7-pipeline-global-path}{{6.6}{24}{Pipelines Comparés}{section.6.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6.2}{\ignorespaces Résumé des pipelines zéro-shot L2--L7}}{24}{table.caption.17}\protected@file@percent }
+\newlabel{tab:l2-l7-pipeline-summary}{{6.2}{24}{Résumé des pipelines zéro-shot L2--L7}{table.caption.17}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.7}Résultats Synthétiques}{24}{section.6.7}\protected@file@percent }
+\newlabel{sec:l2-l7-pipeline-agreement}{{6.7}{24}{Résultats Synthétiques}{section.6.7}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {6.3}{\ignorespaces Synthèse des résultats L2--L7 par embedder et par pipeline}}{25}{table.caption.18}\protected@file@percent }
 \newlabel{tab:l2-l7-embedder-pipeline-results}{{6.3}{25}{Synthèse des résultats L2--L7 par embedder et par pipeline}{table.caption.18}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {6.4}{\ignorespaces Synthèse globale des accords entre pipelines}}{25}{table.caption.19}\protected@file@percent }
@@ -137,8 +137,8 @@
 \newlabel{fig:l2-l7-exact-path-agreement-main}{{6.2}{26}{Matrices d'accord exact sur le chemin complet pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.21}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {6.5}{\ignorespaces Audit NLP complet : score moyen, win rate et rang moyen}}{26}{table.caption.22}\protected@file@percent }
 \newlabel{tab:l2-l7-full-biencoder-audit}{{6.5}{26}{Audit NLP complet : score moyen, win rate et rang moyen}{table.caption.22}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6.5}Comparaison Globale et Choix Opérationnel}{26}{section.6.5}\protected@file@percent }
-\newlabel{sec:l2-l7-operational-choice}{{6.5}{26}{Comparaison Globale et Choix Opérationnel}{section.6.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.8}Comparaison Globale et Choix Opérationnel}{26}{section.6.8}\protected@file@percent }
+\newlabel{sec:l2-l7-operational-choice}{{6.8}{26}{Comparaison Globale et Choix Opérationnel}{section.6.8}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {7}Conclusion et Perspectives}{28}{chapter.7}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
@@ -147,8 +147,10 @@
 \newlabel{sec:conclusion-pipeline-summary}{{7.1}{28}{Synthèse du Pipeline Retenu}{section.7.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7.2}Passage à l'Échelle et Coût d'Inference}{29}{section.7.2}\protected@file@percent }
 \newlabel{sec:conclusion-scale-up}{{7.2}{29}{Passage à l'Échelle et Coût d'Inference}{section.7.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7.1}{\ignorespaces Extrapolation du coût d'inference avec Qwen3 + greedy à partir des mesures observées}}{29}{table.caption.23}\protected@file@percent }
-\newlabel{tab:conclusion-scale-up}{{7.1}{29}{Extrapolation du coût d'inference avec Qwen3 + greedy à partir des mesures observées}{table.caption.23}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7.1}{\ignorespaces Benchmark online du pipeline final sur 10\,000 produits}}{29}{table.caption.23}\protected@file@percent }
+\newlabel{tab:conclusion-scale-up}{{7.1}{29}{Benchmark online du pipeline final sur 10\,000 produits}{table.caption.23}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7.2}{\ignorespaces Coût offline de préparation des embeddings Qwen3 partagés}}{30}{table.caption.24}\protected@file@percent }
+\newlabel{tab:conclusion-scale-up-offline}{{7.2}{30}{Coût offline de préparation des embeddings Qwen3 partagés}{table.caption.24}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7.3}Perspectives d'Amélioration}{30}{section.7.3}\protected@file@percent }
 \newlabel{sec:conclusion-perspectives}{{7.3}{30}{Perspectives d'Amélioration}{section.7.3}{}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {8}Bibliographie}{32}{chapter.8}\protected@file@percent }
@@ -185,66 +187,65 @@
 \newlabel{sec:literature-details-annex}{{A.1}{35}{Compléments Mathématiques de la Revue de Littérature}{section.A.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {A.2}Statistiques Descriptives Détaillées}{36}{section.A.2}\protected@file@percent }
 \newlabel{sec:data-detailed-annex}{{A.2}{36}{Statistiques Descriptives Détaillées}{section.A.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.1}{\ignorespaces Distribution des produits annotés au Niveau 1.}}{36}{figure.caption.25}\protected@file@percent }
-\newlabel{fig:distL1}{{A.1}{36}{Distribution des produits annotés au Niveau 1}{figure.caption.25}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.2}{\ignorespaces Prix médian par catégorie L1, à gauche, et distribution de profondeur de la taxonomie, à droite.}}{36}{figure.caption.26}\protected@file@percent }
-\newlabel{fig:data-price-taxonomy-depth-annex}{{A.2}{36}{Prix médian par catégorie L1, à gauche, et distribution de profondeur de la taxonomie, à droite}{figure.caption.26}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.3}{\ignorespaces Tailles des branches L1 et visualisation partielle de l'arbre L1--L2.}}{37}{figure.caption.27}\protected@file@percent }
-\newlabel{fig:data-taxonomy-tree-annex}{{A.3}{37}{Tailles des branches L1 et visualisation partielle de l'arbre L1--L2}{figure.caption.27}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.1}{\ignorespaces Distribution des produits annotés au Niveau 1.}}{36}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:distL1}{{A.1}{36}{Distribution des produits annotés au Niveau 1}{figure.caption.26}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.2}{\ignorespaces Prix médian par catégorie L1, à gauche, et distribution de profondeur de la taxonomie, à droite.}}{36}{figure.caption.27}\protected@file@percent }
+\newlabel{fig:data-price-taxonomy-depth-annex}{{A.2}{36}{Prix médian par catégorie L1, à gauche, et distribution de profondeur de la taxonomie, à droite}{figure.caption.27}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.3}{\ignorespaces Tailles des branches L1 et visualisation partielle de l'arbre L1--L2.}}{37}{figure.caption.28}\protected@file@percent }
+\newlabel{fig:data-taxonomy-tree-annex}{{A.3}{37}{Tailles des branches L1 et visualisation partielle de l'arbre L1--L2}{figure.caption.28}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {A.3}Figures d'Intuition pour l'Enrichissement des Catégories}{37}{section.A.3}\protected@file@percent }
 \newlabel{sec:category-enrichment-annex}{{A.3}{37}{Figures d'Intuition pour l'Enrichissement des Catégories}{section.A.3}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {A.4}Résultats Détaillés du Fine-Tuning L1}{37}{section.A.4}\protected@file@percent }
 \newlabel{sec:l1-detailed-annex}{{A.4}{37}{Résultats Détaillés du Fine-Tuning L1}{section.A.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.1}{\ignorespaces Comparaison de modèles d'embeddings compacts dans le snapshot MTEB utilisé}}{37}{table.caption.28}\protected@file@percent }
-\newlabel{tab:mteb-compact-embedders}{{A.1}{37}{Comparaison de modèles d'embeddings compacts dans le snapshot MTEB utilisé}{table.caption.28}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.4}{\ignorespaces Évolution de la training loss lors du fine-tuning supervisé du Niveau 1.}}{38}{figure.caption.29}\protected@file@percent }
-\newlabel{fig:l1-triplet-loss}{{A.4}{38}{Évolution de la training loss lors du fine-tuning supervisé du Niveau 1}{figure.caption.29}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.5}{\ignorespaces Accuracy top-1 par catégorie sans sampling équilibré, à gauche, et avec balanced sampling uniforme, à droite.}}{38}{figure.caption.30}\protected@file@percent }
-\newlabel{fig:l1-accuracy-baseline-balanced-annex}{{A.5}{38}{Accuracy top-1 par catégorie sans sampling équilibré, à gauche, et avec balanced sampling uniforme, à droite}{figure.caption.30}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.6}{\ignorespaces Projection UMAP des embeddings produits après fine-tuning supervisé du Niveau 1.}}{39}{figure.caption.31}\protected@file@percent }
-\newlabel{fig:l1-embedding-umap}{{A.6}{39}{Projection UMAP des embeddings produits après fine-tuning supervisé du Niveau 1}{figure.caption.31}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.7}{\ignorespaces Confusion matrix normalisée par catégorie vraie pour le modèle Niveau 1 retenu.}}{40}{figure.caption.32}\protected@file@percent }
-\newlabel{fig:l1-confusion-matrix-normalized}{{A.7}{40}{Confusion matrix normalisée par catégorie vraie pour le modèle Niveau 1 retenu}{figure.caption.32}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.5}Audit NLP Complet L2--L7}{40}{section.A.5}\protected@file@percent }
-\newlabel{sec:l2-l7-nlp-audit-annex}{{A.5}{40}{Audit NLP Complet L2--L7}{section.A.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.2}{\ignorespaces Audit NLP complet avec bi-encoder sur 128\,253 produits et 641\,265 paires.}}{40}{table.caption.33}\protected@file@percent }
-\newlabel{tab:l2-l7-full-biencoder-audit-annex}{{A.2}{40}{Audit NLP complet avec bi-encoder sur 128\,253 produits et 641\,265 paires}{table.caption.33}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.3}{\ignorespaces Audit NLP complet avec cross-encoder sur 128\,253 produits et 641\,265 paires.}}{41}{table.caption.34}\protected@file@percent }
-\newlabel{tab:l2-l7-full-crossencoder-audit-annex}{{A.3}{41}{Audit NLP complet avec cross-encoder sur 128\,253 produits et 641\,265 paires}{table.caption.34}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.4}{\ignorespaces Coût de l'audit NLP complet sur Kaggle.}}{41}{table.caption.35}\protected@file@percent }
-\newlabel{tab:l2-l7-full-nlp-audit-cost-annex}{{A.4}{41}{Coût de l'audit NLP complet sur Kaggle}{table.caption.35}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.8}{\ignorespaces Audit NLP complet : win rates et scores moyens par pipeline.}}{41}{figure.caption.36}\protected@file@percent }
-\newlabel{fig:l2-l7-full-nlp-audit-annex}{{A.8}{41}{Audit NLP complet : win rates et scores moyens par pipeline}{figure.caption.36}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.6}Comparaison détaillée des stratégies de sampling L1}{41}{section.A.6}\protected@file@percent }
-\newlabel{sec:l1-sampling-annex}{{A.6}{41}{Comparaison détaillée des stratégies de sampling L1}{section.A.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.7}Projection UMAP et comparaison PCA des Embeddings de Niveau 1}{41}{section.A.7}\protected@file@percent }
-\newlabel{sec:umap-pca-annex}{{A.7}{41}{Projection UMAP et comparaison PCA des Embeddings de Niveau 1}{section.A.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.10}{\ignorespaces Projection PCA des embeddings produits après fine-tuning supervisé du Niveau 1.}}{42}{figure.caption.38}\protected@file@percent }
-\newlabel{fig:l1-embedding-pca-annex}{{A.10}{42}{Projection PCA des embeddings produits après fine-tuning supervisé du Niveau 1}{figure.caption.38}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.8}V de Cramér pour l'Association entre Pipelines}{42}{section.A.8}\protected@file@percent }
-\newlabel{sec:cramers-v-annex}{{A.8}{42}{V de Cramér pour l'Association entre Pipelines}{section.A.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.9}Tableau Global des Metrics L2--L7 Non Supervisées}{44}{section.A.9}\protected@file@percent }
-\newlabel{sec:l2-l7-metrics-annex}{{A.9}{44}{Tableau Global des Metrics L2--L7 Non Supervisées}{section.A.9}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {A.5}{\ignorespaces Synthèse des metrics non supervisées utilisées pour comparer les pipelines L2--L7.}}{45}{table.caption.39}\protected@file@percent }
-\newlabel{tab:l2-l7-global-metrics-annex}{{A.5}{45}{Synthèse des metrics non supervisées utilisées pour comparer les pipelines L2--L7}{table.caption.39}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.10}Matrices d'Accord L2--L7 et Vitesse de Divergence}{45}{section.A.10}\protected@file@percent }
-\newlabel{sec:l2-l7-family3-matrices-annex}{{A.10}{45}{Matrices d'Accord L2--L7 et Vitesse de Divergence}{section.A.10}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.11}{\ignorespaces Vitesse de divergence entre pipelines selon la profondeur taxonomique. Les courbes grises correspondent aux paires de pipelines ; la courbe bleue indique la divergence moyenne.}}{46}{figure.caption.40}\protected@file@percent }
-\newlabel{fig:l2-l7-family3-divergence-depth}{{A.11}{46}{Vitesse de divergence entre pipelines selon la profondeur taxonomique. Les courbes grises correspondent aux paires de pipelines ; la courbe bleue indique la divergence moyenne}{figure.caption.40}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.12}{\ignorespaces Matrices d'accord exact au Niveau 2 pour Qwen3, à gauche, et Jasper, à droite.}}{47}{figure.caption.41}\protected@file@percent }
-\newlabel{fig:l2-l7-family3-level2-matrix}{{A.12}{47}{Matrices d'accord exact au Niveau 2 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.41}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.13}{\ignorespaces Matrices d'accord exact au Niveau 3 pour Qwen3, à gauche, et Jasper, à droite.}}{47}{figure.caption.42}\protected@file@percent }
-\newlabel{fig:l2-l7-family3-level3-matrix}{{A.13}{47}{Matrices d'accord exact au Niveau 3 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.42}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.14}{\ignorespaces Matrices d'accord exact au Niveau 4 pour Qwen3, à gauche, et Jasper, à droite.}}{48}{figure.caption.43}\protected@file@percent }
-\newlabel{fig:l2-l7-family3-level4-matrix}{{A.14}{48}{Matrices d'accord exact au Niveau 4 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.43}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.15}{\ignorespaces Matrices d'accord exact au Niveau 5 pour Qwen3, à gauche, et Jasper, à droite.}}{48}{figure.caption.44}\protected@file@percent }
-\newlabel{fig:l2-l7-family3-level5-matrix}{{A.15}{48}{Matrices d'accord exact au Niveau 5 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.44}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.16}{\ignorespaces Matrices d'accord exact au Niveau 6 pour Qwen3, à gauche, et Jasper, à droite.}}{49}{figure.caption.45}\protected@file@percent }
-\newlabel{fig:l2-l7-family3-level6-matrix}{{A.16}{49}{Matrices d'accord exact au Niveau 6 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.45}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.17}{\ignorespaces Matrices d'accord exact au Niveau 7 pour Qwen3, à gauche, et Jasper, à droite.}}{49}{figure.caption.46}\protected@file@percent }
-\newlabel{fig:l2-l7-family3-level7-matrix}{{A.17}{49}{Matrices d'accord exact au Niveau 7 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.46}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A.11}Beam Search et Reranking pour le Décodage Hiérarchique}{50}{section.A.11}\protected@file@percent }
-\newlabel{sec:beam-reranker-annex}{{A.11}{50}{Beam Search et Reranking pour le Décodage Hiérarchique}{section.A.11}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {A.9}{\ignorespaces Comparaison des accuracies top-1 par catégorie pour les cinq stratégies de sampling.}}{53}{figure.caption.37}\protected@file@percent }
-\newlabel{fig:l1-category-accuracy-sampling-comparison}{{A.9}{53}{Comparaison des accuracies top-1 par catégorie pour les cinq stratégies de sampling}{figure.caption.37}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.1}{\ignorespaces Comparaison de modèles d'embeddings compacts dans le snapshot MTEB utilisé}}{37}{table.caption.29}\protected@file@percent }
+\newlabel{tab:mteb-compact-embedders}{{A.1}{37}{Comparaison de modèles d'embeddings compacts dans le snapshot MTEB utilisé}{table.caption.29}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.4}{\ignorespaces Évolution de la training loss lors du fine-tuning supervisé du Niveau 1.}}{38}{figure.caption.30}\protected@file@percent }
+\newlabel{fig:l1-triplet-loss}{{A.4}{38}{Évolution de la training loss lors du fine-tuning supervisé du Niveau 1}{figure.caption.30}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.5}{\ignorespaces Accuracy top-1 par catégorie sans sampling équilibré, à gauche, et avec balanced sampling uniforme, à droite.}}{38}{figure.caption.31}\protected@file@percent }
+\newlabel{fig:l1-accuracy-baseline-balanced-annex}{{A.5}{38}{Accuracy top-1 par catégorie sans sampling équilibré, à gauche, et avec balanced sampling uniforme, à droite}{figure.caption.31}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.6}{\ignorespaces Projection UMAP des embeddings produits après fine-tuning supervisé du Niveau 1.}}{39}{figure.caption.32}\protected@file@percent }
+\newlabel{fig:l1-embedding-umap}{{A.6}{39}{Projection UMAP des embeddings produits après fine-tuning supervisé du Niveau 1}{figure.caption.32}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.7}{\ignorespaces Confusion matrix normalisée par catégorie vraie pour le modèle Niveau 1 retenu.}}{40}{figure.caption.33}\protected@file@percent }
+\newlabel{fig:l1-confusion-matrix-normalized}{{A.7}{40}{Confusion matrix normalisée par catégorie vraie pour le modèle Niveau 1 retenu}{figure.caption.33}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.5}Comparaison détaillée des stratégies de sampling L1}{40}{section.A.5}\protected@file@percent }
+\newlabel{sec:l1-sampling-annex}{{A.5}{40}{Comparaison détaillée des stratégies de sampling L1}{section.A.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.6}Définition des Metrics de Classification L1}{40}{section.A.6}\protected@file@percent }
+\newlabel{sec:l1-classification-metrics-annex}{{A.6}{40}{Définition des Metrics de Classification L1}{section.A.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.8}{\ignorespaces Comparaison des accuracies top-1 par catégorie pour les cinq stratégies de sampling testées.}}{41}{figure.caption.34}\protected@file@percent }
+\newlabel{fig:l1-category-accuracy-sampling-comparison}{{A.8}{41}{Comparaison des accuracies top-1 par catégorie pour les cinq stratégies de sampling testées}{figure.caption.34}{}}
+\@writefile{toc}{\contentsline {paragraph}{Accuracy top-1.}{41}{section.A.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Accuracy top-$k$.}{41}{equation.A.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Precision, recall et $F_1$ par classe.}{41}{equation.A.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Macro-precision, macro-recall et macro-$F_1$.}{42}{equation.A.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Balanced accuracy.}{42}{equation.A.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Weighted $F_1$.}{42}{equation.A.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Lecture conjointe des metrics.}{42}{equation.A.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A.7}Projection UMAP et comparaison PCA des Embeddings de Niveau 1}{43}{section.A.7}\protected@file@percent }
+\newlabel{sec:umap-pca-annex}{{A.7}{43}{Projection UMAP et comparaison PCA des Embeddings de Niveau 1}{section.A.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.9}{\ignorespaces Projection PCA des embeddings produits après fine-tuning supervisé du Niveau 1.}}{44}{figure.caption.35}\protected@file@percent }
+\newlabel{fig:l1-embedding-pca-annex}{{A.9}{44}{Projection PCA des embeddings produits après fine-tuning supervisé du Niveau 1}{figure.caption.35}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.8}V de Cramér pour l'Association entre Pipelines}{44}{section.A.8}\protected@file@percent }
+\newlabel{sec:cramers-v-annex}{{A.8}{44}{V de Cramér pour l'Association entre Pipelines}{section.A.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.9}Tableau Global des Metrics L2--L7 Non Supervisées}{45}{section.A.9}\protected@file@percent }
+\newlabel{sec:l2-l7-metrics-annex}{{A.9}{45}{Tableau Global des Metrics L2--L7 Non Supervisées}{section.A.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.2}{\ignorespaces Synthèse des metrics non supervisées utilisées pour comparer les pipelines L2--L7.}}{46}{table.caption.36}\protected@file@percent }
+\newlabel{tab:l2-l7-global-metrics-annex}{{A.2}{46}{Synthèse des metrics non supervisées utilisées pour comparer les pipelines L2--L7}{table.caption.36}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.10}Matrices d'Accord L2--L7 et Vitesse de Divergence}{46}{section.A.10}\protected@file@percent }
+\newlabel{sec:l2-l7-family3-matrices-annex}{{A.10}{46}{Matrices d'Accord L2--L7 et Vitesse de Divergence}{section.A.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.10}{\ignorespaces Vitesse de divergence entre pipelines selon la profondeur taxonomique. Les courbes grises correspondent aux paires de pipelines ; la courbe bleue indique la divergence moyenne.}}{47}{figure.caption.37}\protected@file@percent }
+\newlabel{fig:l2-l7-family3-divergence-depth}{{A.10}{47}{Vitesse de divergence entre pipelines selon la profondeur taxonomique. Les courbes grises correspondent aux paires de pipelines ; la courbe bleue indique la divergence moyenne}{figure.caption.37}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.11}{\ignorespaces Matrices d'accord exact au Niveau 2 pour Qwen3, à gauche, et Jasper, à droite.}}{48}{figure.caption.38}\protected@file@percent }
+\newlabel{fig:l2-l7-family3-level2-matrix}{{A.11}{48}{Matrices d'accord exact au Niveau 2 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.38}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.12}{\ignorespaces Matrices d'accord exact au Niveau 3 pour Qwen3, à gauche, et Jasper, à droite.}}{48}{figure.caption.39}\protected@file@percent }
+\newlabel{fig:l2-l7-family3-level3-matrix}{{A.12}{48}{Matrices d'accord exact au Niveau 3 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.39}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.13}{\ignorespaces Matrices d'accord exact au Niveau 4 pour Qwen3, à gauche, et Jasper, à droite.}}{49}{figure.caption.40}\protected@file@percent }
+\newlabel{fig:l2-l7-family3-level4-matrix}{{A.13}{49}{Matrices d'accord exact au Niveau 4 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.40}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.14}{\ignorespaces Matrices d'accord exact au Niveau 5 pour Qwen3, à gauche, et Jasper, à droite.}}{49}{figure.caption.41}\protected@file@percent }
+\newlabel{fig:l2-l7-family3-level5-matrix}{{A.14}{49}{Matrices d'accord exact au Niveau 5 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.41}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.15}{\ignorespaces Matrices d'accord exact au Niveau 6 pour Qwen3, à gauche, et Jasper, à droite.}}{50}{figure.caption.42}\protected@file@percent }
+\newlabel{fig:l2-l7-family3-level6-matrix}{{A.15}{50}{Matrices d'accord exact au Niveau 6 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.42}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {A.16}{\ignorespaces Matrices d'accord exact au Niveau 7 pour Qwen3, à gauche, et Jasper, à droite.}}{50}{figure.caption.43}\protected@file@percent }
+\newlabel{fig:l2-l7-family3-level7-matrix}{{A.16}{50}{Matrices d'accord exact au Niveau 7 pour Qwen3, à gauche, et Jasper, à droite}{figure.caption.43}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A.11}Beam Search et Reranking pour le Décodage Hiérarchique}{51}{section.A.11}\protected@file@percent }
+\newlabel{sec:beam-reranker-annex}{{A.11}{51}{Beam Search et Reranking pour le Décodage Hiérarchique}{section.A.11}{}}
 \gdef \@abspage@last{54}

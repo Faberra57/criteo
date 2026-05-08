@@ -22,12 +22,12 @@
 \contentsline {chapter}{\numberline {6}Recherche Zéro-Shot pour L2--L7}{21}{chapter.6}%
 \contentsline {section}{\numberline {6.1}Embeddings partagés et choix de l'encodeur}{21}{section.6.1}%
 \contentsline {section}{\numberline {6.2}Méthodologie d'Assessment Non Supervisé}{21}{section.6.2}%
-\contentsline {section}{\numberline {6.3}Pipelines Comparés}{23}{section.6.3}%
-\contentsline {subsection}{\numberline {6.3.1}Pipeline 1 : Décodage Hiérarchique Local}{23}{subsection.6.3.1}%
-\contentsline {subsection}{\numberline {6.3.2}Pipeline 2 : Clustering Hiérarchique Contraint par la Taxonomie}{24}{subsection.6.3.2}%
-\contentsline {subsection}{\numberline {6.3.3}Pipeline 3 : Retrieval de Chemins Globaux}{24}{subsection.6.3.3}%
-\contentsline {section}{\numberline {6.4}Résultats Synthétiques}{25}{section.6.4}%
-\contentsline {section}{\numberline {6.5}Comparaison Globale et Choix Opérationnel}{26}{section.6.5}%
+\contentsline {section}{\numberline {6.3}Pipeline 1 : Décodage Hiérarchique Local}{22}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Pipeline 2 : Clustering Hiérarchique Contraint par la Taxonomie}{23}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Pipeline 3 : Retrieval de Chemins Globaux}{24}{section.6.5}%
+\contentsline {section}{\numberline {6.6}Pipelines Comparés}{24}{section.6.6}%
+\contentsline {section}{\numberline {6.7}Résultats Synthétiques}{24}{section.6.7}%
+\contentsline {section}{\numberline {6.8}Comparaison Globale et Choix Opérationnel}{26}{section.6.8}%
 \contentsline {chapter}{\numberline {7}Conclusion et Perspectives}{28}{chapter.7}%
 \contentsline {section}{\numberline {7.1}Synthèse du Pipeline Retenu}{28}{section.7.1}%
 \contentsline {section}{\numberline {7.2}Passage à l'Échelle et Coût d'Inference}{29}{section.7.2}%
@@ -38,10 +38,17 @@
 \contentsline {section}{\numberline {A.2}Statistiques Descriptives Détaillées}{36}{section.A.2}%
 \contentsline {section}{\numberline {A.3}Figures d'Intuition pour l'Enrichissement des Catégories}{37}{section.A.3}%
 \contentsline {section}{\numberline {A.4}Résultats Détaillés du Fine-Tuning L1}{37}{section.A.4}%
-\contentsline {section}{\numberline {A.5}Audit NLP Complet L2--L7}{40}{section.A.5}%
-\contentsline {section}{\numberline {A.6}Comparaison détaillée des stratégies de sampling L1}{41}{section.A.6}%
-\contentsline {section}{\numberline {A.7}Projection UMAP et comparaison PCA des Embeddings de Niveau 1}{41}{section.A.7}%
-\contentsline {section}{\numberline {A.8}V de Cramér pour l'Association entre Pipelines}{42}{section.A.8}%
-\contentsline {section}{\numberline {A.9}Tableau Global des Metrics L2--L7 Non Supervisées}{44}{section.A.9}%
-\contentsline {section}{\numberline {A.10}Matrices d'Accord L2--L7 et Vitesse de Divergence}{45}{section.A.10}%
-\contentsline {section}{\numberline {A.11}Beam Search et Reranking pour le Décodage Hiérarchique}{50}{section.A.11}%
+\contentsline {section}{\numberline {A.5}Comparaison détaillée des stratégies de sampling L1}{40}{section.A.5}%
+\contentsline {section}{\numberline {A.6}Définition des Metrics de Classification L1}{40}{section.A.6}%
+\contentsline {paragraph}{Accuracy top-1.}{41}{section.A.6}%
+\contentsline {paragraph}{Accuracy top-$k$.}{41}{equation.A.6}%
+\contentsline {paragraph}{Precision, recall et $F_1$ par classe.}{41}{equation.A.7}%
+\contentsline {paragraph}{Macro-precision, macro-recall et macro-$F_1$.}{42}{equation.A.9}%
+\contentsline {paragraph}{Balanced accuracy.}{42}{equation.A.11}%
+\contentsline {paragraph}{Weighted $F_1$.}{42}{equation.A.12}%
+\contentsline {paragraph}{Lecture conjointe des metrics.}{42}{equation.A.13}%
+\contentsline {section}{\numberline {A.7}Projection UMAP et comparaison PCA des Embeddings de Niveau 1}{43}{section.A.7}%
+\contentsline {section}{\numberline {A.8}V de Cramér pour l'Association entre Pipelines}{44}{section.A.8}%
+\contentsline {section}{\numberline {A.9}Tableau Global des Metrics L2--L7 Non Supervisées}{45}{section.A.9}%
+\contentsline {section}{\numberline {A.10}Matrices d'Accord L2--L7 et Vitesse de Divergence}{46}{section.A.10}%
+\contentsline {section}{\numberline {A.11}Beam Search et Reranking pour le Décodage Hiérarchique}{51}{section.A.11}%
