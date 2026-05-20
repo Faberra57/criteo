@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.preprocessing import (  # noqa: E402
+from scripts.lib.preprocessing_core import (  # noqa: E402
     PreprocessingConfig,
     load_catalog_and_ground_truth,
     merge_catalog_with_ground_truth,

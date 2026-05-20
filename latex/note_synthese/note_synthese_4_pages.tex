@@ -1,0 +1,186 @@
+\documentclass[11pt,a4paper]{article}
+
+% =======================
+% Packages
+% =======================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{top=2.0cm,bottom=2.0cm,left=2.1cm,right=2.1cm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+
+\setstretch{1.04}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.35em}
+\setlist[itemize]{leftmargin=0.7cm,itemsep=0.15em,topsep=0.2em}
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+
+\newcommand{\decisionbox}[1]{%
+\begin{center}
+\fbox{\begin{minipage}{0.94\textwidth}#1\end{minipage}}
+\end{center}}
+
+\begin{document}
+
+% =======================
+% Page de couverture
+% =======================
+\begin{titlepage}
+    \centering
+    \vspace*{1.2cm}
+
+    \IfFileExists{figures/logo_ensae.pdf}{%
+        \includegraphics[width=0.22\textwidth]{figures/logo_ensae.pdf}\par
+    }{%
+        \fbox{\begin{minipage}{0.22\textwidth}\centering\vspace{0.35cm}ENSAE\\Paris\vspace{0.35cm}\end{minipage}}\par
+    }
+    \vspace{0.8cm}
+    
+    {\scshape\LARGE ENSAE Paris \par}
+    \vspace{1cm}
+    {\scshape\Large Projet Stat'App \par}
+    \vspace{1.2cm}
+    
+    \rule{\linewidth}{0.5mm} \\[0.35cm]
+    {\huge \bfseries Rapport de synthèse \par}
+    \vspace{0.25cm}
+    {\Large \bfseries Unsupervised \& Semi-Supervised Product Categorization at Scale into the Google Product Taxonomy \par}
+    \vspace{0.35cm}
+    \rule{\linewidth}{0.5mm} \\[1.3cm]
+    
+    \Large
+    \emph{Auteurs :}\\
+    Salah Eddine NEJJARI, Tao DANG TRAN, \\
+    Thomas FAVRE, Yohan ANDRIAMAMPIONONA\par
+    
+    \vspace{1cm}
+    \normalsize
+    \emph{Sous le tutorat de :} \\
+    Guillaume Lochon (Critéo)\\
+    Ilan Benchetrit (Critéo)\\ 
+    Nicolas Chopin (ENSAE)\\
+    
+    \vfill
+    {\large Mai 2026 \par}
+\end{titlepage}
+
+\small
+
+% =======================
+% Page 2
+% =======================
+\section*{1. Synthèse exécutive}
+
+Ce projet répond à un besoin simple à formuler mais difficile à industrialiser : classer automatiquement un grand catalogue de produits dans la taxonomie Google, une arborescence très détaillée qui peut descendre jusqu'à sept niveaux. Pour Critéo, cette classification facilite la compréhension des produits et peut améliorer la pertinence des systèmes publicitaires. Le projet reste toutefois un travail pédagogique : il propose et compare des méthodes, mais il ne constitue pas un système directement prêt pour la production.
+
+L'idée centrale est de transformer chaque produit et chaque catégorie en une représentation numérique appelée \emph{embedding}. Deux textes proches par leur sens sont alors proches dans cet espace. Le produit peut ainsi être rapproché de la catégorie qui lui ressemble le plus. Cette approche évite d'appeler en permanence de très grands modèles génératifs, ce qui réduit le coût de calcul.
+
+\decisionbox{%
+\textbf{Messages principaux.}
+\begin{itemize}
+    \item Le catalogue étudié contient 128\,253 produits et la taxonomie cible contient plus de 5\,400 catégories.
+    \item Les labels fiables existent uniquement pour le Niveau 1, c'est-à-dire les grandes familles de produits.
+    \item Le Niveau 1 obtient de bons résultats avec un modèle compact affiné sur les données du projet.
+    \item Les niveaux 2 à 7 sont traités sans vérité terrain : les résultats profonds doivent donc être lus comme des hypothèses, pas comme une exactitude mesurée.
+    \item La solution recommandée privilégie une méthode rapide en production, et réserve les méthodes plus coûteuses aux audits ou aux cas incertains.
+\end{itemize}}
+
+\section*{2. Problème et données disponibles}
+
+Le catalogue contient des titres, descriptions, marques et prix. Les textes sont courts, hétérogènes et parfois ambigus. Par exemple, deux produits proches peuvent utiliser des mots différents, tandis qu'un même mot peut désigner des objets différents selon le contexte. Cette difficulté est typique des catalogues e-commerce.
+
+La principale contrainte méthodologique est l'absence de vérité terrain fiable pour les niveaux 2 à 7. Autrement dit, on connaît la grande catégorie d'un produit, mais pas toujours sa catégorie fine. Cette limite change la manière d'évaluer le projet : au Niveau 1, on peut mesurer une performance classique ; aux niveaux profonds, on compare surtout la cohérence, la stabilité, le coût et les désaccords entre méthodes.
+
+\section*{3. Approche retenue}
+
+Le pipeline est organisé en deux étapes. La première étape classe le produit dans une grande famille, par exemple \emph{Home \& Garden} ou \emph{Electronics}. Cette étape est supervisée, car les données contiennent des labels de Niveau 1. La seconde étape descend dans l'arbre taxonomique pour proposer une catégorie plus précise. Elle est dite \emph{zéro-shot}, car elle ne dispose pas d'exemples annotés pour chaque sous-catégorie.
+
+Avant de comparer les produits aux catégories, les noms de catégories sont enrichis. Une catégorie n'est pas représentée seulement par son nom court, mais aussi par son chemin dans l'arbre, ses enfants et des variantes lexicales. Cela rend la comparaison plus robuste lorsqu'un nom de catégorie est trop bref ou trop général.
+
+\newpage
+
+% =======================
+% Page 3
+% =======================
+\section*{4. Résultats au Niveau 1}
+
+Pour le Niveau 1, le modèle retenu est \texttt{BAAI/bge-small-en-v1.5}. Il est compact, rapide et adapté à un usage où le coût de calcul doit rester raisonnable. Le modèle a été affiné avec une stratégie qui rapproche les produits d'une même famille et éloigne les produits de familles différentes. Une attention particulière a été portée aux catégories rares, afin d'éviter que le modèle soit uniquement performant sur les grandes catégories très représentées.
+
+\begin{center}
+\begin{tabularx}{0.96\textwidth}{>{\bfseries}p{4.1cm}X}
+\toprule
+Élément & Résultat synthétique \\
+\midrule
+Modèle L1 & \texttt{BAAI/bge-small-en-v1.5}, environ 33 millions de paramètres. \\
+Méthode d'affinage & Apprentissage par similarité, avec un échantillonnage tempéré pour mieux traiter les catégories rares. \\
+Exactitude top-1 & 90{,}6\,\% des produits testés sont classés dans la bonne grande catégorie. \\
+Exactitude top-5 & 97{,}1\,\% des produits ont la bonne catégorie parmi les cinq premières propositions. \\
+Intérêt métier & Le Niveau 1 est assez robuste pour servir de point d'entrée au reste du pipeline. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Ces résultats sont encourageants, mais ils doivent être interprétés avec prudence. Une erreur au Niveau 1 bloque ensuite la recherche dans la bonne branche de l'arbre. Le top-5 élevé est donc important : il montre que, même quand la première proposition est fausse, la bonne famille reste souvent proche.
+
+\section*{5. Résultats pour les niveaux 2 à 7}
+
+Pour les niveaux profonds, plusieurs stratégies ont été comparées. La méthode \emph{greedy} descend dans l'arbre en choisissant à chaque niveau la sous-catégorie la plus proche du produit. Le \emph{beam search} conserve plusieurs chemins possibles avant de décider. La recherche de chemins globaux compare directement le produit à des chemins taxonomiques complets. Le reranking réévalue certains chemins avec un modèle plus coûteux, mais potentiellement plus précis.
+
+Le modèle d'embeddings recommandé pour cette partie est \texttt{Qwen3-Embedding-0.6B}. Il demande plus de temps d'encodage que certaines alternatives, mais ses vecteurs sont deux fois plus petits que ceux de Jasper dans l'expérience, ce qui réduit fortement la mémoire et le coût des comparaisons.
+
+\begin{center}
+\begin{tabularx}{0.96\textwidth}{>{\bfseries\RaggedRight\arraybackslash}p{3.5cm}>{\RaggedRight\arraybackslash}X>{\RaggedLeft\arraybackslash}p{2.4cm}}
+\toprule
+Méthode & Lecture simple & Usage conseillé \\
+\midrule
+Greedy & Très rapide, simple à industrialiser, mais sensible aux erreurs prises tôt dans l'arbre. & Production rapide \\
+Beam search & Plus prudent, car il conserve plusieurs hypothèses. & Production si la latence le permet \\
+Recherche globale & Utile pour obtenir une proposition alternative et détecter les désaccords. & Audit \\
+Reranking & Meilleure qualité brute dans certains audits, mais coût nettement plus élevé. & Cas incertains \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Le point essentiel est que les métriques L2--L7 ne mesurent pas une exactitude réelle. Elles mesurent le coût, la diversité des chemins, les marges de confiance et l'accord entre pipelines. Les désaccords sont donc utiles : ils indiquent les produits qui méritent une vérification humaine ou une seconde passe plus coûteuse.
+
+\newpage
+
+% =======================
+% Page 4
+% =======================
+\section*{6. Passage à l'échelle et choix opérationnel}
+
+Un test de passage à l'échelle a été réalisé sur 10\,000 produits. Le résultat le plus important est que le coût principal ne vient pas de la navigation dans la taxonomie, mais de l'encodage des textes avec Qwen3. Une fois les embeddings calculés, la descente greedy dans l'arbre est presque négligeable en temps de calcul.
+
+Dans le test, le pipeline complet avec greedy atteint environ 84{,}36 ms par produit, soit environ 11{,}9 produits par seconde. La variante hybride avec reranking atteint environ 93{,}81 ms par produit, soit environ 10{,}7 produits par seconde. Surtout, le reranking a été déclenché pour 98{,}54\,\% des produits, ce qui revient presque à reranker tout le catalogue. Le seuil testé est donc trop permissif pour une production frugale.
+
+\decisionbox{%
+\textbf{Recommandation finale.}
+\begin{itemize}
+    \item \textbf{Niveau 1 :} utiliser \texttt{BGE-small} affiné avec échantillonnage tempéré.
+    \item \textbf{Niveaux 2 à 7 :} utiliser Qwen3 pour les embeddings et les catégories enrichies.
+    \item \textbf{Production :} choisir greedy par défaut ; activer beam search lorsque l'on accepte un surcoût modéré.
+    \item \textbf{Audit :} réserver la recherche globale et le reranking aux produits incertains, aux désaccords entre méthodes ou aux lots contrôlés manuellement.
+\end{itemize}}
+
+\section*{7. Limites et prochaines étapes}
+
+La limite principale reste l'absence de labels fiables pour les niveaux profonds. Sans validation humaine ou jeu annoté L2--L7, il est impossible d'affirmer qu'un chemin précis est correct. Le projet donne donc une méthode crédible de génération d'hypothèses, mais pas encore une preuve complète de qualité sur toute la taxonomie.
+
+Pour aller plus loin, trois actions sont prioritaires. Premièrement, constituer un petit jeu de validation annoté sur les niveaux profonds, en ciblant les branches les plus importantes ou les plus ambiguës. Deuxièmement, calibrer un vrai seuil d'incertitude pour déclencher le reranking uniquement lorsque cela vaut le coût. Troisièmement, optimiser l'inférence : grands lots, précision mixte, pré-calcul des catégories et index de recherche plus efficaces.
+
+\section*{8. Conclusion}
+
+Le projet montre qu'une approche par embeddings compacts permet de traiter une taxonomie produit profonde avec un coût raisonnable. Le Niveau 1 est solide et utilisable comme porte d'entrée supervisée. Pour les niveaux 2 à 7, la solution doit rester prudente : greedy ou beam search en production, méthodes plus sophistiquées pour l'audit et les cas incertains. La prochaine étape décisive n'est pas seulement algorithmique ; elle consiste surtout à créer une vérité terrain profonde pour transformer les hypothèses actuelles en performances réellement mesurables.
+
+\end{document}

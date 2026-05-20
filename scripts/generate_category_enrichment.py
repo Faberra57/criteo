@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.category_enrichment import (  # noqa: E402
+from scripts.lib.category_enrichment_core import (  # noqa: E402
     DEFAULT_MLX_LOCAL_MODEL_DIR,
     DEFAULT_MLX_MODEL,
     DEFAULT_GITHUB_MODELS_BASE_URL,

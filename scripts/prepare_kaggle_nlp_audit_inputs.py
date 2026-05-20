@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare compact Parquet inputs for kaggle/audit_l2_l7_nlp_kaggle.py."""
+"""Prepare compact Parquet inputs for scripts/kaggle/audit_l2_l7_nlp_kaggle.py."""
 
 from __future__ import annotations
 
@@ -53,7 +53,7 @@ def main() -> None:
     started = time.perf_counter()
     OUT.mkdir(parents=True, exist_ok=True)
     manifest = {
-        "description": "Compact Parquet inputs for kaggle/audit_l2_l7_nlp_kaggle.py",
+        "description": "Compact Parquet inputs for scripts/kaggle/audit_l2_l7_nlp_kaggle.py",
         "keep_columns": sorted(KEEP_COLUMNS),
         "groups": {},
     }
@@ -114,12 +114,12 @@ def convert_prediction_csv(src: Path, dst: Path) -> dict[str, object]:
 def build_readme() -> str:
     return """# Kaggle L2-L7 NLP Audit Inputs
 
-Compact Parquet files for `kaggle/audit_l2_l7_nlp_kaggle.py`.
+Compact Parquet files for `scripts/kaggle/audit_l2_l7_nlp_kaggle.py`.
 
 Usage on Kaggle for Qwen:
 
 ```bash
-python /kaggle/input/<code-dataset>/audit_l2_l7_nlp_kaggle.py \
+python /kaggle/input/<code-dataset>/scripts/kaggle/audit_l2_l7_nlp_kaggle.py \
   --preset qwen \
   --predictions-dir /kaggle/input/<this-dataset>/qwen \
   --category-prototypes-path /kaggle/input/<this-dataset>/qwen/category_prototypes.parquet \
@@ -131,7 +131,7 @@ python /kaggle/input/<code-dataset>/audit_l2_l7_nlp_kaggle.py \
 Usage on Kaggle for Jasper:
 
 ```bash
-python /kaggle/input/<code-dataset>/audit_l2_l7_nlp_kaggle.py \
+python /kaggle/input/<code-dataset>/scripts/kaggle/audit_l2_l7_nlp_kaggle.py \
   --preset jasper \
   --predictions-dir /kaggle/input/<this-dataset>/jasper \
   --category-prototypes-path /kaggle/input/<this-dataset>/jasper/category_prototypes.parquet \

@@ -1,14 +1,42 @@
-data/
-.venv/
+# OS / editor
+.DS_Store
 .vscode/
-saved_models/
-modele_checkpoint/
-modele_catalogue_finetuned_final/
-checkpoints/
-tmpp0tohx6_.csv
-dataset
-legacy
-artifacts
+.ruff_cache/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.ruff_cache/
+.tmp/
+.uv-cache/
+
+# Secrets
 .env
-models
+
+# Local data / models / artifacts
+/data/
+/dataset/
+/models/
+/artifacts/
+/checkpoints/
+/saved_models/
+/modele_checkpoint/
+/modele_catalogue_finetuned_final/
 *.csv
+*.json
+
+# LaTeX temporary files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
